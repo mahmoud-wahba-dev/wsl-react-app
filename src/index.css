@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark;
+}
+
+/* Figma light: page/navbar #ffffff, text #1e293b, brand #006153, secondary #64748b */
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-base-100: #ffffff;
+  --color-base-content: #1e293b;
+  --color-primary: #006153;
+  --color-primary-content: #ffffff;
+  --color-secondary: #3e4946;
+  --color-secondary-content: #ffffff;
+}
+
+/* Figma dark: page/navbar #0f172a, text #3b82f6, brand #006153, secondary #64748b */
+@plugin "daisyui/theme" {
+  name: "dark";
+  --color-base-100: #0f172a;
+  --color-base-content: white;
+  --color-primary: #006153;
+  --color-primary-content: #ffffff;
+  --color-secondary: #64748b;
+  --color-secondary-content: #ffffff;
+}
+
+// sans is default body font
+@theme {
+  --font-sans: "Tajawal", sans-serif;
+}
+
+@layer utilities {
+  .center {
+    @apply flex justify-between items-center;
+  }
+}
