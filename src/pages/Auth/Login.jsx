@@ -55,7 +55,7 @@ const Login = () => {
           <label className="label font-medium text-14px text-[#0D1D2C]">
             كلمة المرور
           </label>
-          <Link className="font-normal link-hover text-12px text-[#006153]">
+          <Link to={"/reset-password"} className="font-normal link-hover text-12px text-[#006153]">
             نسيت كلمة المرور؟
           </Link>
         </div>
@@ -97,7 +97,7 @@ const Login = () => {
         </div>
         <p className="text-center font-normal text-base text-[#3E4946]">
           ليس لديك حساب؟
-          <Link className="font-normal text-base text-primary px-2 link-hover">إنشاء حساب جديد</Link>
+          <Link to={"/register"} className="font-normal text-base text-primary px-2 link-hover">إنشاء حساب جديد</Link>
         </p>
       </fieldset>
     </section>
