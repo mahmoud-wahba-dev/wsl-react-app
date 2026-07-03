@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
 @plugin "daisyui" {
   themes:
     light --default,
@@ -28,7 +29,6 @@
   --color-secondary-content: #ffffff;
 }
 
-// sans is default body font
 @theme {
   --font-sans: "Tajawal", sans-serif;
 }

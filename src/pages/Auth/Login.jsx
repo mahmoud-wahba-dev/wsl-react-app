@@ -7,7 +7,7 @@ const Login = () => {
       <div className="text-center ">
         <div className="mb-2 text-center center">
           <svg
-          className="m-auto"
+            className="m-auto"
             width="69"
             height="27"
             viewBox="0 0 69 27"
@@ -20,21 +20,63 @@ const Login = () => {
             />
           </svg>
         </div>
-        <p className="text-base  font-normal text-[#3E4946] mb-10">
+        <p className=" text-base font-normal text-[#3E4946] mb-10">
           منصة الربط الذكي للمنح التنموية
         </p>
       </div>
-      <fieldset className="bg-white p-10 fieldset bg-base-200 border-base-300 rounded-40 w-md border ">
-        <p className="font-medium text">تسجيل الدخول</p>
-        <p>أدخل بياناتك للوصول إلى حسابك في وصل</p>
-        <label className="label">البريد الإلكتروني</label>
-        <input type="email" className="input" placeholder="example@wasl.sa" />
+      <fieldset className="bg-white p-10 fieldset shadow-xl border-[#BDC9C54D] rounded-16px w-md border ">
+        <p className="font-medium text-20px text-[#0D1D2C] mb-2">
+          تسجيل الدخول
+        </p>
+        <p className="font-medium text-14px mb-8 text-[#3E4946] ">
+          أدخل بياناتك للوصول إلى حسابك في وصل
+        </p>
+        <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+          البريد الإلكتروني
+        </label>
+        <label class="input w-full h-12 mb-6 ">
+          <input type="text" class="grow " placeholder="example@wasl.sa" />
 
-        <label className="label">كلمة المرور</label>
-        <Link>نسيت كلمة المرور؟</Link>
-        <input type="password" className="input" placeholder="••••••••" />
+          <svg
+            width="20"
+            height="16"
+            viewBox="0 0 20 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H2ZM10 9L2 4V14H18V4L10 9ZM10 7L18 2H2L10 7ZM2 4V2V4V14V4Z"
+              fill="#BDC9C5"
+            />
+          </svg>
+        </label>
 
-        <button className="btn btn-neutral mt-4">
+        <div className="flex items-center justify-between mb-2 ">
+          <label className="label font-medium text-14px text-[#0D1D2C]">
+            كلمة المرور
+          </label>
+          <Link className="font-normal link-hover text-12px text-[#006153]">
+            نسيت كلمة المرور؟
+          </Link>
+        </div>
+        <label class="input w-full h-12">
+          <input type="password" class="grow " placeholder="••••••••" />
+
+          <svg
+            width="16"
+            height="21"
+            viewBox="0 0 16 21"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M2 21C1.45 21 0.979167 20.8042 0.5875 20.4125C0.195833 20.0208 0 19.55 0 19V9C0 8.45 0.195833 7.97917 0.5875 7.5875C0.979167 7.19583 1.45 7 2 7H3V5C3 3.61667 3.4875 2.4375 4.4625 1.4625C5.4375 0.4875 6.61667 0 8 0C9.38333 0 10.5625 0.4875 11.5375 1.4625C12.5125 2.4375 13 3.61667 13 5V7H14C14.55 7 15.0208 7.19583 15.4125 7.5875C15.8042 7.97917 16 8.45 16 9V19C16 19.55 15.8042 20.0208 15.4125 20.4125C15.0208 20.8042 14.55 21 14 21H2ZM2 19H14V9H2V19ZM8 16C8.55 16 9.02083 15.8042 9.4125 15.4125C9.80417 15.0208 10 14.55 10 14C10 13.45 9.80417 12.9792 9.4125 12.5875C9.02083 12.1958 8.55 12 8 12C7.45 12 6.97917 12.1958 6.5875 12.5875C6.19583 12.9792 6 13.45 6 14C6 14.55 6.19583 15.0208 6.5875 15.4125C6.97917 15.8042 7.45 16 8 16ZM5 7H11V5C11 4.16667 10.7083 3.45833 10.125 2.875C9.54167 2.29167 8.83333 2 8 2C7.16667 2 6.45833 2.29167 5.875 2.875C5.29167 3.45833 5 4.16667 5 5V7ZM2 19V9V19Z"
+              fill="#BDC9C5"
+            />
+          </svg>
+        </label>
+
+        <button className="btn btn-primary h-14 rounded-8px font-medium text-12px  mt-6">
           تسجيل الدخول
           <svg
             width="18"
@@ -49,12 +91,15 @@ const Login = () => {
             />
           </svg>
         </button>
+
+        <div className="divider font-stretch-condensed text-12px text-[#3E4946] mb-8">
+          أو
+        </div>
+        <p className="text-center font-normal text-base text-[#3E4946]">
+          ليس لديك حساب؟
+          <Link className="font-normal text-base text-primary px-2 link-hover">إنشاء حساب جديد</Link>
+        </p>
       </fieldset>
-      <div className="divider">أو</div>
-      <p>
-        ليس لديك حساب؟
-        <Link>إنشاء حساب جديد</Link>
-      </p>
     </section>
   );
 };
