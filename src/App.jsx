@@ -7,9 +7,9 @@ import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
-import ResetPassword from "./pages/Auth/resetPassword";
 import InReview from "./pages/Auth/InReview";
 import MatchRequest from "./pages/MatchRequest";
+import ResetPassword from './pages/Auth/ResetPassword';
 
 const router = createBrowserRouter([
   {
