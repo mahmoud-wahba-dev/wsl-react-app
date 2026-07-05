@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/Auth/resetPassword";
 import InReview from "./pages/Auth/InReview";
+import MatchRequest from "./pages/MatchRequest";
 
 const router = createBrowserRouter([
   {
@@ -27,7 +28,10 @@ const router = createBrowserRouter([
         path: "/organizations",
         element: <Organizations />,
       },
-
+   {
+        path: "/match-request",
+        element: <MatchRequest />,
+      },
       {
         path: "/login",
         element: <Login />,
