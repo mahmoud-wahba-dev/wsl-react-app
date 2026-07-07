@@ -33,7 +33,7 @@ export default function Navbar() {
           <div className="flex-none gap-2">
             <ul className="menu menu-horizontal px-1 max-md:hidden">
               {items.map((item, idx) => (
-                <li>
+                <li key={idx}>
                   <NavLink
                     to={item.href}
                     className={"font-normal text-base text-[#3E4946"}

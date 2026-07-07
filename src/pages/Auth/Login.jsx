@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import PasswordToggleIcon from "../../composable/PasswordToggleIcon";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <section className="bg-[#F6F8F9] flex justify-center flex-col gap-4 items-center h-full min-h-[70vh] py-12">
       <div className="text-center ">
@@ -34,8 +37,8 @@ const Login = () => {
         <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
           البريد الإلكتروني
         </label>
-        <label class="input w-full h-12 mb-6 ">
-          <input type="text" class="grow " placeholder="example@wasl.sa" />
+        <label className="input w-full h-12 mb-6 ">
+          <input type="text" className="grow " placeholder="example@wasl.sa" />
 
           <svg
             width="20"
@@ -59,9 +62,7 @@ const Login = () => {
             نسيت كلمة المرور؟
           </Link>
         </div>
-        <label class="input w-full h-12">
-          <input type="password" class="grow " placeholder="••••••••" />
-
+        <label className="input w-full h-12">
           <svg
             width="16"
             height="21"
@@ -74,6 +75,21 @@ const Login = () => {
               fill="#BDC9C5"
             />
           </svg>
+          <input
+            type={showPassword ? "text" : "password"}
+            className="grow "
+            placeholder="••••••••"
+          />
+
+          
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={() => setShowPassword((current) => !current)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+          >
+            <PasswordToggleIcon visible={showPassword} />
+          </button>
         </label>
 
         <button className="btn btn-primary h-14 rounded-8px font-medium text-12px  mt-6">

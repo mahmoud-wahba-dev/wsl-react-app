@@ -27,6 +27,7 @@ const Footer = () => {
           <nav className="flex  gap-8 xl:gap-16">
             {items.map((item, idx) => (
               <Link
+                key={idx}
                 to={item.to}
                 className="link link-hover font-normal text-xs text-[#3E4946]"
               >
