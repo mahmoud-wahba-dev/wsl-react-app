@@ -1,10 +1,66 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordToggleIcon from "../../composable/PasswordToggleIcon";
+import * as Yup from "yup";
+import { Field, Form, Formik } from "formik";
+import ErrorMsg from "../../composable/ErrorMsg";
+import Toast from "../../../public/services/toast";
+import { AuthContext } from "../../context/AuthContext";
+import useAuth from "../../hooks/useAuth";
+import Cookies from "js-cookie";
+const baseURL = import.meta.env.VITE_BASE_URL;
+
+const initalValues = {
+  email: "",
+  password: "",
+};
+const validationSchema = Yup.object({
+  email: Yup.string().email().required(),
+  password: Yup.string().required(),
+});
 
 const Login = () => {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false);
+  const [errMsgArr, seterrMsgArr] = useState([]);
+  const { login } = useAuth();
 
+  const handleSubmit = async (values) => {
+    console.log(values, "values");
+    try {
+      const response = await fetch(`${baseURL}/api/auth/jwt/create/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+      if (data.status == 1) {
+        Toast.success("تم تسجيل الدخول");
+
+        const { role, is_verified } = data.data.user;
+        console.log(data.data.access_token, "token");
+        Cookies.set("token", data.data.access_token, {
+          expires: 365, // 1 year
+        });
+        login(data.data.user);
+        navigate("/")
+      } else {
+        Toast.error(data.message);
+        seterrMsgArr(data.errors);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    errMsgArr.map((errItem) => Toast.error(errItem.message));
+  }, [errMsgArr]);
   return (
     <section className="bg-[#F6F8F9] flex justify-center flex-col gap-4 items-center h-full min-h-[70vh] py-12">
       <div className="text-center ">
@@ -34,86 +90,125 @@ const Login = () => {
         <p className="font-medium text-14px mb-8 text-[#3E4946] ">
           أدخل بياناتك للوصول إلى حسابك في وصل
         </p>
-        <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
-          البريد الإلكتروني
-        </label>
-        <label className="input w-full h-12 mb-6 ">
-          <input type="text" className="grow " placeholder="example@wasl.sa" />
+        <Formik
+          initialValues={initalValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <div className="mb-6">
+                <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+                  البريد الإلكتروني
+                </label>
+                <label className="input w-full h-12">
+                  <Field
+                    name="email"
+                    type="text"
+                    className="grow"
+                    placeholder="example@wasl.sa"
+                  />
 
-          <svg
-            width="20"
-            height="16"
-            viewBox="0 0 20 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H2ZM10 9L2 4V14H18V4L10 9ZM10 7L18 2H2L10 7ZM2 4V2V4V14V4Z"
-              fill="#BDC9C5"
-            />
-          </svg>
-        </label>
+                  <svg
+                    width="20"
+                    height="16"
+                    viewBox="0 0 20 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H2ZM10 9L2 4V14H18V4L10 9ZM10 7L18 2H2L10 7ZM2 4V2V4V14V4Z"
+                      fill="#BDC9C5"
+                    />
+                  </svg>
+                </label>
+                <ErrorMsg name={"email"} />
+              </div>
 
-        <div className="flex items-center justify-between mb-2 ">
-          <label className="label font-medium text-14px text-[#0D1D2C]">
-            كلمة المرور
-          </label>
-          <Link to={"/reset-password"} className="font-normal link-hover text-12px text-[#006153]">
-            نسيت كلمة المرور؟
-          </Link>
-        </div>
-        <label className="input w-full h-12">
-          <svg
-            width="16"
-            height="21"
-            viewBox="0 0 16 21"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M2 21C1.45 21 0.979167 20.8042 0.5875 20.4125C0.195833 20.0208 0 19.55 0 19V9C0 8.45 0.195833 7.97917 0.5875 7.5875C0.979167 7.19583 1.45 7 2 7H3V5C3 3.61667 3.4875 2.4375 4.4625 1.4625C5.4375 0.4875 6.61667 0 8 0C9.38333 0 10.5625 0.4875 11.5375 1.4625C12.5125 2.4375 13 3.61667 13 5V7H14C14.55 7 15.0208 7.19583 15.4125 7.5875C15.8042 7.97917 16 8.45 16 9V19C16 19.55 15.8042 20.0208 15.4125 20.4125C15.0208 20.8042 14.55 21 14 21H2ZM2 19H14V9H2V19ZM8 16C8.55 16 9.02083 15.8042 9.4125 15.4125C9.80417 15.0208 10 14.55 10 14C10 13.45 9.80417 12.9792 9.4125 12.5875C9.02083 12.1958 8.55 12 8 12C7.45 12 6.97917 12.1958 6.5875 12.5875C6.19583 12.9792 6 13.45 6 14C6 14.55 6.19583 15.0208 6.5875 15.4125C6.97917 15.8042 7.45 16 8 16ZM5 7H11V5C11 4.16667 10.7083 3.45833 10.125 2.875C9.54167 2.29167 8.83333 2 8 2C7.16667 2 6.45833 2.29167 5.875 2.875C5.29167 3.45833 5 4.16667 5 5V7ZM2 19V9V19Z"
-              fill="#BDC9C5"
-            />
-          </svg>
-          <input
-            type={showPassword ? "text" : "password"}
-            className="grow "
-            placeholder="••••••••"
-          />
+              <div className="flex items-center justify-between mb-2 ">
+                <label className="label font-medium text-14px text-[#0D1D2C]">
+                  كلمة المرور
+                </label>
+                <Link
+                  to={"/reset-password"}
+                  className="font-normal link-hover text-12px text-[#006153]"
+                >
+                  نسيت كلمة المرور؟
+                </Link>
+              </div>
+              <div>
+                <label className="input w-full h-12">
+                  <svg
+                    width="16"
+                    height="21"
+                    viewBox="0 0 16 21"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2 21C1.45 21 0.979167 20.8042 0.5875 20.4125C0.195833 20.0208 0 19.55 0 19V9C0 8.45 0.195833 7.97917 0.5875 7.5875C0.979167 7.19583 1.45 7 2 7H3V5C3 3.61667 3.4875 2.4375 4.4625 1.4625C5.4375 0.4875 6.61667 0 8 0C9.38333 0 10.5625 0.4875 11.5375 1.4625C12.5125 2.4375 13 3.61667 13 5V7H14C14.55 7 15.0208 7.19583 15.4125 7.5875C15.8042 7.97917 16 8.45 16 9V19C16 19.55 15.8042 20.0208 15.4125 20.4125C15.0208 20.8042 14.55 21 14 21H2ZM2 19H14V9H2V19ZM8 16C8.55 16 9.02083 15.8042 9.4125 15.4125C9.80417 15.0208 10 14.55 10 14C10 13.45 9.80417 12.9792 9.4125 12.5875C9.02083 12.1958 8.55 12 8 12C7.45 12 6.97917 12.1958 6.5875 12.5875C6.19583 12.9792 6 13.45 6 14C6 14.55 6.19583 15.0208 6.5875 15.4125C6.97917 15.8042 7.45 16 8 16ZM5 7H11V5C11 4.16667 10.7083 3.45833 10.125 2.875C9.54167 2.29167 8.83333 2 8 2C7.16667 2 6.45833 2.29167 5.875 2.875C5.29167 3.45833 5 4.16667 5 5V7ZM2 19V9V19Z"
+                      fill="#BDC9C5"
+                    />
+                  </svg>
+                  <Field
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    className="grow "
+                    placeholder="••••••••"
+                  />
 
-          
-          <button
-            type="button"
-            className="cursor-pointer"
-            onClick={() => setShowPassword((current) => !current)}
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            <PasswordToggleIcon visible={showPassword} />
-          </button>
-        </label>
+                  <button
+                    type="button"
+                    className="cursor-pointer"
+                    onClick={() => setShowPassword((current) => !current)}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    <PasswordToggleIcon visible={showPassword} />
+                  </button>
+                </label>
+                <ErrorMsg name={"password"} />
+              </div>
 
-        <button className="btn btn-primary h-14 rounded-8px font-medium text-12px  mt-6">
-          تسجيل الدخول
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M9 18V16H16V2H9V0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H9ZM7 14L5.625 12.55L8.175 10H0V8H8.175L5.625 5.45L7 4L12 9L7 14Z"
-              fill="white"
-            />
-          </svg>
-        </button>
+              <button
+                className="btn btn-primary btn-block h-14 rounded-8px font-medium text-12px  mt-6"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                تسجيل الدخول
+                {isSubmitting ? (
+                  <span className="loading loading-infinity text-primary loading-xl"></span>
+                ) : (
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9 18V16H16V2H9V0H16C16.55 0 17.0208 0.195833 17.4125 0.5875C17.8042 0.979167 18 1.45 18 2V16C18 16.55 17.8042 17.0208 17.4125 17.4125C17.0208 17.8042 16.55 18 16 18H9ZM7 14L5.625 12.55L8.175 10H0V8H8.175L5.625 5.45L7 4L12 9L7 14Z"
+                      fill="white"
+                    />
+                  </svg>
+                )}
+              </button>
+            </Form>
+          )}
+        </Formik>
 
         <div className="divider font-stretch-condensed text-12px text-[#3E4946] mb-8">
           أو
         </div>
         <p className="text-center font-normal text-base text-[#3E4946]">
           ليس لديك حساب؟
-          <Link to={"/register"} className="font-normal text-base text-primary px-2 link-hover">إنشاء حساب جديد</Link>
+          <Link
+            to={"/register"}
+            className="font-normal text-base text-primary px-2 link-hover"
+          >
+            إنشاء حساب جديد
+          </Link>
         </p>
       </fieldset>
     </section>

@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
+import useAuth from "../hooks/useAuth";
+import Toast from "../../public/services/toast";
 
 const items = [
   { name: "لوحة الإدارة", href: "/" },
@@ -9,7 +11,8 @@ const items = [
 ];
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
-
+const { user } = useAuth();
+console.log(user);
   return (
     <nav className="bg-[#F8F9FF] shadow-sm">
       <div className="container">

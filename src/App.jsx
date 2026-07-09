@@ -9,7 +9,9 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import InReview from "./pages/Auth/InReview";
 import MatchRequest from "./pages/MatchRequest";
-import ResetPassword from './pages/Auth/ResetPassword';
+import ResetPassword from "./pages/Auth/ResetPassword";
+import useAuth from "./hooks/useAuth";
+import LoadingScreen from "./components/LoadingScreen";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +30,7 @@ const router = createBrowserRouter([
         path: "/organizations",
         element: <Organizations />,
       },
-   {
+      {
         path: "/match-request",
         element: <MatchRequest />,
       },
@@ -58,6 +60,10 @@ const router = createBrowserRouter([
   },
 ]);
 function App() {
+  const { loading } = useAuth();
+  if (loading) {
+    return <LoadingScreen />;
+  }
   return <RouterProvider router={router} />;
 }
 

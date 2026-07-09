@@ -235,7 +235,7 @@ const Register = () => {
           أو
         </div> */}
         <p
-          onClick={() => handleClick()}
+         
           className="text-center font-normal text-base text-[#3E4946] mt-4"
         >
           لديك حساب بالفعل؟
