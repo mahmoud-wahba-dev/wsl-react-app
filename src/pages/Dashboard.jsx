@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Dashboard = () => {
+const Home = () => {
   return (
     <section>
       <div className="container">
@@ -190,4 +190,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Home;
