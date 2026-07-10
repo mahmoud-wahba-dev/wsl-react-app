@@ -1,82 +1,79 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MasterLayout from "./Layout/MasterLayout";
-import Navbar from "./Layout/Navbar";
 import MyRequests from "./pages/MyRequests";
 import Organizations from "./pages/Organizations";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import InReview from "./pages/Auth/InReview";
 import MatchRequest from "./pages/MatchRequest";
 import ResetPassword from "./pages/Auth/ResetPassword";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 import useAuth from "./hooks/useAuth";
 import LoadingScreen from "./components/LoadingScreen";
 import AuthGuard from "./guards/AuthGuard";
-import Home from './pages/Dashboard';
+import GuestRoute from "./guards/GuestRoute";
+import AdminRoute from "./guards/AdminRoute";
+import InReviewGuard from "./guards/InReviewGuard";
 
 const router = createBrowserRouter([
-  // ================= Guest Routes =================
-
+  // Guest routes (login, register, reset-password)
   {
-    path: "/login",
-    element: <Login />,
+    element: <GuestRoute />,
+    children: [
+      { path: "/login", element: <Login /> },
+      { path: "/register", element: <Register /> },
+      { path: "/reset-password", element: <ResetPassword /> },
+    ],
   },
 
+  // In-review (only unverified users can see it)
   {
-    path: "/register",
-    element: <Register />,
+    element: <InReviewGuard />,
+    children: [
+      { path: "/in-review", element: <InReview /> },
+    ],
   },
 
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
-  // ================= Protected Routes =================
+  // Protected (requires auth + verified or admin)
   {
     element: <AuthGuard />,
     children: [
       {
-        path: "/",
         element: <MasterLayout />,
         children: [
-          {
-            index: true,
-            element: <Home />,
-          },
-          {
-            path: "my-requests",
-            element: <MyRequests />,
-          },
-          {
-            path: "organizations",
-            element: <Organizations />,
-          },
-          {
-            path: "match-request",
-            element: <MatchRequest />,
-          },
+          { index: true, element: <Dashboard /> },
+          { path: "my-requests", element: <MyRequests /> },
+          { path: "organizations", element: <Organizations /> },
+          { path: "match-request", element: <MatchRequest /> },
         ],
-      },
-      {
-        path: "/in-review",
-        element: <InReview />,
       },
     ],
   },
 
-  // ================= Not Found =================
+  // Admin only
   {
-    path: "*",
-    element: <NotFound />,
+    element: <AdminRoute />,
+    children: [
+      {
+        element: <MasterLayout />,
+        children: [
+          { path: "/admin", element: <AdminDashboard /> },
+        ],
+      },
+    ],
   },
+
+  // Catch-all
+  { path: "*", element: <NotFound /> },
 ]);
+
 function App() {
   const { loading } = useAuth();
-  console.log("Loading:", loading);
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  if (loading) return <LoadingScreen />;
+
   return <RouterProvider router={router} />;
 }
 

@@ -1,7 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const InReview = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
   return (
     <section className="bg-[#F6F8F9] flex justify-center flex-col gap-4 items-center h-full min-h-[70vh] py-12">
       <fieldset className="bg-white p-10 fieldset shadow-xl border-[#BDC9C54D] rounded-16px w-md border flex flex-col items-center ">
@@ -50,13 +59,12 @@ const InReview = () => {
           عادة ما تستغرق المراجعة 24-48 ساعة عمل.
         </div>
 
-        <Link
-          to={"/"}
-          className="btn btn-primary btn-block h-14 rounded-8px font-medium text-12px  "
+        <button
+          onClick={handleLogout}
+          className="btn btn-primary btn-block h-14 rounded-8px font-medium text-12px"
         >
-          العودة للرئيسية
-    
-        </Link>
+          تسجيل الخروج
+        </button>
       </fieldset>
     </section>
   );

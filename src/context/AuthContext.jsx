@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
+
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 export const AuthContext = createContext(null);
@@ -8,16 +9,26 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  function login(userData) {
-    setUser(userData);
+  function login(data) {
+    Cookies.set("access_token", data.access_token, {
+      expires: 365,
+      sameSite: "strict",
+    });
+    Cookies.set("user", JSON.stringify(data.user), {
+      expires: 365,
+      sameSite: "strict",
+    });
+    setUser(data.user);
   }
+
   function logout() {
-    Cookies.remove("token");
+    Cookies.remove("access_token");
+    Cookies.remove("user");
     setUser(null);
   }
 
   const restoreSession = async () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("access_token");
     if (!token) {
       setLoading(false);
       return;
@@ -30,36 +41,30 @@ const AuthProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response, "dd");
 
-      const userData = await response.json();
-      console.log(userData);
-
-      if (!userData.status) {
-        throw new Error(userData.message);
+      const result = await response.json();
+      if (!response.ok || !result.status) {
+        throw new Error(result.message || "Session expired");
       }
-      // Save the logged-in user in Context
 
-      setUser(userData.data);
+      setUser(result.data);
     } catch (error) {
       console.error(error);
-      Cookies.remove("token");
+      Cookies.remove("access_token");
+      Cookies.remove("user");
       setUser(null);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     restoreSession();
   }, []);
+
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        loading,
-      }}
+      value={{ user, login, logout, loading, isLoggedIn: user !== null }}
     >
       {children}
     </AuthContext.Provider>

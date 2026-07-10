@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import PasswordToggleIcon from "../../composable/PasswordToggleIcon";
 import * as Yup from "yup";
 import { Field, Form, Formik } from "formik";
 import ErrorMsg from "../../composable/ErrorMsg";
 import Toast from "../../../public/services/toast";
-import { AuthContext } from "../../context/AuthContext";
 import useAuth from "../../hooks/useAuth";
-import Cookies from "js-cookie";
+
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 const initalValues = {
@@ -20,7 +19,6 @@ const validationSchema = Yup.object({
 });
 
 const Login = () => {
-  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false);
   const [errMsgArr, seterrMsgArr] = useState([]);
   const { login } = useAuth();
@@ -42,14 +40,7 @@ const Login = () => {
       console.log(data);
       if (data.status == 1) {
         Toast.success("تم تسجيل الدخول");
-
-        const { role, is_verified } = data.data.user;
-        console.log(data.data.access_token, "token");
-        Cookies.set("token", data.data.access_token, {
-          expires: 365, // 1 year
-        });
-        login(data.data.user);
-        navigate("/")
+        login(data.data);
       } else {
         Toast.error(data.message);
         seterrMsgArr(data.errors);

@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
-const AuthGuard = () => {
+const InReviewGuard = () => {
   const auth = useAuth();
   const user = auth.user;
   const isLoading = auth.loading;
@@ -14,14 +14,11 @@ const AuthGuard = () => {
     return <Navigate to="/login" replace />;
   }
 
-  const isAdmin = user.role === "admin";
-  const isVerified = user.is_verified === true;
-
-  if (isAdmin === false && isVerified === false) {
-    return <Navigate to="/in-review" replace />;
+  if (user.role === "admin" || user.is_verified === true) {
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
 };
 
-export default AuthGuard;
+export default InReviewGuard;
