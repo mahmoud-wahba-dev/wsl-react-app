@@ -1,6 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MasterLayout from "./Layout/MasterLayout";
-import MyRequests from "./pages/MyRequests";
 import Organizations from "./pages/Organizations";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
@@ -16,6 +15,7 @@ import AuthGuard from "./guards/AuthGuard";
 import GuestRoute from "./guards/GuestRoute";
 import AdminRoute from "./guards/AdminRoute";
 import InReviewGuard from "./guards/InReviewGuard";
+import MatchResult from './pages/MatchResult';
 
 const router = createBrowserRouter([
   // Guest routes (login, register, reset-password)
@@ -44,7 +44,7 @@ const router = createBrowserRouter([
         element: <MasterLayout />,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: "my-requests", element: <MyRequests /> },
+          { path: "match-result", element: <MatchResult /> },
           { path: "organizations", element: <Organizations /> },
           { path: "match-request", element: <MatchRequest /> },
         ],

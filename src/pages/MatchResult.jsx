@@ -1,7 +1,7 @@
 import React from "react";
 import ReqCard from "../components/ReqCard";
 
-const MyRequests = () => {
+const MatchResult = () => {
   return (
     <section>
       <div className="container">
@@ -75,4 +75,4 @@ const MyRequests = () => {
   );
 };
 
-export default MyRequests;
+export default MatchResult;
