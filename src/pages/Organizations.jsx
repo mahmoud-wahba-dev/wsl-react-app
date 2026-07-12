@@ -1,7 +1,26 @@
 import { Link } from "react-router-dom";
 import OrgCard from "../components/OrgCard";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import Loader from "../components/Loader";
+import { api } from "../utils/api";
+
+const baseURL = import.meta.env.VITE_BASE_URL;
 
 const Organizations = () => {
+  const [donorOrgs, setDonorOrgs] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+
+      const data = await api("/api/grants/donors/");
+      setDonorOrgs(data.data.results);
+      setLoading(false);
+    };
+    loadData();
+  }, []);
   return (
     <section>
       <div className="container">
@@ -78,11 +97,15 @@ const Organizations = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          <OrgCard />
-          <OrgCard />
-          <OrgCard />
-          <OrgCard />
-          <OrgCard />
+          {loading ? (
+            <div className="col-span-full">
+              <Loader />
+            </div>
+          ) : donorOrgs.length > 0 ? (
+            donorOrgs.map((item) => <OrgCard key={item.id} item={item} />)
+          ) : (
+            <h4 className="col-span-full text-center">لا يوجد مؤسسات مانحه</h4>
+          )}
         </div>
 
         <div className="center mb-10">

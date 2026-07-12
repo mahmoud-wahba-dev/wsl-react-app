@@ -1,6 +1,10 @@
 import orgImg from "../assets/imgs/org.jpg";
 
-const OrgCard = () => {
+const OrgCard = ({ item }) => {
+  const { name, logoProp, funding_areas, locationProp } = item;
+
+  const logo = logoProp ?? orgImg;
+  const location = locationProp || "السعودية";
   return (
     <div className="rounded-12px bg-white shadow-2xl p-6">
       <div className="flex items-center justify-between mb-6">
@@ -22,27 +26,54 @@ const OrgCard = () => {
             />
           </svg>
 
-          <span>الرياض</span>
+          <span>{location}</span>
         </div>
       </div>
 
-      <h4 className="mb-2 font-medium text-20px text-[#0D1D2C]">
-        مؤسسة سليمان الراجحي الخيرية
-      </h4>
-      <div className="flex items-center gap-2 mb-10">
-        <div className="badge badge-soft bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153] ">
-          التعليم
-        </div>
-        <div className="badge badge-soft bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153] ">
-          الصحة
-        </div>
-
-        <div className="badge badge-soft bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153] ">
-          التمكين الاجتماعي
-        </div>
+      <h4 className="mb-2 font-medium text-20px text-[#0D1D2C]">{name}</h4>
+      <div className="flex items-center gap-2 mb-10 flex-wrap">
+        {funding_areas.slice(0, 3).map((item, idx) => (
+          <div
+            key={idx}
+            className="badge badge-soft py-5 bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153]"
+          >
+            {item}
+          </div>
+        ))}
+        {funding_areas.length > 3 && (
+          <div className="dropdown dropdown-top dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="badge badge-soft bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153] cursor-pointer hover:bg-[#00615333] transition-colors py-5"
+            >
+              +{funding_areas.length - 3}
+            </div>
+            <div
+              tabIndex={0}
+              className="dropdown-content card w-max bg-white z-10 shadow-xl rounded-xl border border-gray-100 min-w-48"
+            >
+              <div className="card-body p-4 gap-2">
+                <p className="text-sm font-medium text-gray-500 border-b border-gray-100 pb-2 mb-1">
+                  مجالات التمويل
+                </p>
+                {funding_areas.slice(3).map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="badge badge-soft bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153]"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div>
-        <button className="btn btn-primary btn-block font-medium text-14px">عرض التفاصيل</button>
+        <button className="btn btn-primary btn-block font-medium text-14px">
+          عرض التفاصيل
+        </button>
       </div>
     </div>
   );

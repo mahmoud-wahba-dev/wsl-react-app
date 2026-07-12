@@ -14,9 +14,9 @@ export default function Navbar() {
 
   const items = [
     ...(user?.role === "admin"
-      ? [{ name: "لوحة الإدارة", href: "/admin" }]
+      ? [{ name: "  لوحة الإدارة الطلبات", href: "/admin" }]
       : []),
-    { name: "طلباتي", href: "/my-requests" },
+    { name: "نتائج المطابقه", href: "/match-result" },
     { name: "المؤسسات", href: "/organizations" },
   ];
 

@@ -3,7 +3,7 @@ import MasterLayout from "./Layout/MasterLayout";
 import Organizations from "./pages/Organizations";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
-import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import InReview from "./pages/Auth/InReview";
 import MatchRequest from "./pages/MatchRequest";
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
       {
         element: <MasterLayout />,
         children: [
-          { index: true, element: <Dashboard /> },
+          { index: true, element: <Home /> },
           { path: "match-result", element: <MatchResult /> },
           { path: "organizations", element: <Organizations /> },
           { path: "match-request", element: <MatchRequest /> },
