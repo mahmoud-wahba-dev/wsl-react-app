@@ -1,26 +1,36 @@
-import { Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import OrgCard from "../components/OrgCard";
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import Loader from "../components/Loader";
 import { api } from "../utils/api";
 
-const baseURL = import.meta.env.VITE_BASE_URL;
-
 const Organizations = () => {
   const [donorOrgs, setDonorOrgs] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+
+  const search = searchParams.get("search") || "";
+
+  const funding_area = searchParams.get("funding_area") || "";
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
+    
+   
+    const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
 
-      const data = await api("/api/grants/donors/");
-      setDonorOrgs(data.data.results);
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const data = await api(`/api/grants/donors/${query}`);
+        setDonorOrgs(data?.data?.results || []);
+      } catch (err) {
+        console.error(err);
+      }
       setLoading(false);
-    };
-    loadData();
-  }, []);
+    }, search ? 500 : 0);
+    return () => clearTimeout(timer);
+  }, [search, funding_area]);
   return (
     <section>
       <div className="container">
@@ -57,8 +67,11 @@ const Organizations = () => {
             <input
               className="border-[#BDC9C5] h-12 rounded-8px"
               type="search"
-              required
               placeholder="البحث عن اسم المؤسسة..."
+              value={search}
+              onChange={(e) =>
+                setSearchParams({ search: e.target.value, funding_area })
+              }
             />
           </label>
 
@@ -87,10 +100,25 @@ const Organizations = () => {
               className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
             >
               <li>
-                <a>Item 1</a>
+                <a onClick={() => setSearchParams({ search })}>الكل</a>
               </li>
               <li>
-                <a>Item 2</a>
+                <a
+                  onClick={() =>
+                    setSearchParams({ search, funding_area: "التعليم" })
+                  }
+                >
+                  التعليم
+                </a>
+              </li>
+              <li>
+                <a
+                  onClick={() =>
+                    setSearchParams({ search, funding_area: "الصحة" })
+                  }
+                >
+                  الصحة
+                </a>
               </li>
             </ul>
           </div>
