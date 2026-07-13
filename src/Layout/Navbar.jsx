@@ -16,7 +16,6 @@ export default function Navbar() {
     ...(user?.role === "admin"
       ? [{ name: "  لوحة الإدارة الطلبات", href: "/admin" }]
       : []),
-    { name: "نتائج المطابقه", href: "/match-result" },
     { name: "المؤسسات", href: "/organizations" },
   ];
 

@@ -44,7 +44,7 @@ const router = createBrowserRouter([
         element: <MasterLayout />,
         children: [
           { index: true, element: <Home /> },
-          { path: "match-result", element: <MatchResult /> },
+          { path: "match-result/:id", element: <MatchResult /> },
           { path: "organizations", element: <Organizations /> },
           { path: "match-request", element: <MatchRequest /> },
         ],

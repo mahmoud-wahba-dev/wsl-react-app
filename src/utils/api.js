@@ -15,5 +15,7 @@ export async function api(endpoint, options = {}) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   const res = await fetch(`${baseURL}${endpoint}`, config);
-  return res.json();
+  const data = await res.json();
+  if (!res.ok) throw data;
+  return data;
 }

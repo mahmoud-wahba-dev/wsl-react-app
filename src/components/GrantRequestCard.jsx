@@ -1,6 +1,10 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const RequestCard = ({ req }) => {
+const GrantRequestCard = ({ req }) => {
+  const navigate = useNavigate();
+
+  const handleMatch = () => navigate(`/match-result/${req.id}`);
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
       <div className="flex items-start justify-between gap-28">
@@ -47,13 +51,16 @@ const RequestCard = ({ req }) => {
         </div>
 
         <div className="flex gap-3">
-          <Link
-            to={"/match-result"}
+          <button
+            onClick={handleMatch}
             className="btn btn-outline border-[#6E7A76] rounded-13px h-11 font-medium text-14px text-[#3E4946]"
           >
             عرض النتائج
-          </Link>
-          <button className="btn btn-primary rounded-13px h-11 font-medium text-14px">
+          </button>
+          <button
+            onClick={handleMatch}
+            className="btn btn-primary rounded-13px h-11 font-medium text-14px"
+          >
             تعديل
           </button>
         </div>
@@ -62,4 +69,4 @@ const RequestCard = ({ req }) => {
   );
 };
 
-export default RequestCard;
+export default GrantRequestCard;

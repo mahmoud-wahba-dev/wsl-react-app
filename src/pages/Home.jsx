@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
-import RequestCard from "../components/RequestCard";
 import { api } from "../utils/api";
+import MatchDonorCard from "../components/MatchDonorCard";
+import GrantRequestCard from "../components/GrantRequestCard";
 
 const Home = () => {
   const [requests, setRequests] = useState([]);
@@ -11,8 +12,12 @@ const Home = () => {
   useEffect(() => {
     const loadRequests = async () => {
       setLoading(true);
-      const data = await api("/api/grants/requests/");
-      setRequests(data.data.results.map(mapRequest));
+      try {
+        const data = await api("/api/grants/requests/");
+        setRequests(data.data.results.map(mapRequest));
+      } catch {
+        setRequests([]);
+      }
       setLoading(false);
     };
     loadRequests();
@@ -66,7 +71,7 @@ const Home = () => {
           {loading ? (
             <Loader />
           ) : requests.length > 0 ? (
-            requests.map((req) => <RequestCard key={req.id} req={req} />)
+            requests.map((req) => <GrantRequestCard key={req.id} req={req} />)
           ) : (
             <h4 className="text-center py-20 text-gray-500">لا توجد طلبات</h4>
           )}
