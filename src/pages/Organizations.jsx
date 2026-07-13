@@ -7,16 +7,14 @@ import { api } from "../utils/api";
 const Organizations = () => {
   const [donorOrgs, setDonorOrgs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({ current_page: 1, total_pages: 1 });
   const [searchParams, setSearchParams] = useSearchParams();
 
-
   const search = searchParams.get("search") || "";
-
   const funding_area = searchParams.get("funding_area") || "";
+  const page = Number(searchParams.get("page")) || 1;
 
   useEffect(() => {
-    
-   
     const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
 
     const timer = setTimeout(async () => {
@@ -24,13 +22,17 @@ const Organizations = () => {
       try {
         const data = await api(`/api/grants/donors/${query}`);
         setDonorOrgs(data?.data?.results || []);
+        setPagination({
+          current_page: data?.data?.current_page || 1,
+          total_pages: data?.data?.total_pages || 1,
+        });
       } catch (err) {
         console.error(err);
       }
       setLoading(false);
     }, search ? 500 : 0);
     return () => clearTimeout(timer);
-  }, [search, funding_area]);
+  }, [search, funding_area, page]);
   return (
     <section>
       <div className="container">
@@ -70,7 +72,7 @@ const Organizations = () => {
               placeholder="البحث عن اسم المؤسسة..."
               value={search}
               onChange={(e) =>
-                setSearchParams({ search: e.target.value, funding_area })
+                setSearchParams({ search: e.target.value, funding_area, page: "1" })
               }
             />
           </label>
@@ -100,12 +102,12 @@ const Organizations = () => {
               className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
             >
               <li>
-                <a onClick={() => setSearchParams({ search })}>الكل</a>
+                <a onClick={() => setSearchParams({ search, page: "1" })}>الكل</a>
               </li>
               <li>
                 <a
                   onClick={() =>
-                    setSearchParams({ search, funding_area: "التعليم" })
+                    setSearchParams({ search, funding_area: "التعليم", page: "1" })
                   }
                 >
                   التعليم
@@ -114,7 +116,7 @@ const Organizations = () => {
               <li>
                 <a
                   onClick={() =>
-                    setSearchParams({ search, funding_area: "الصحة" })
+                    setSearchParams({ search, funding_area: "الصحة", page: "1" })
                   }
                 >
                   الصحة
@@ -136,18 +138,31 @@ const Organizations = () => {
           )}
         </div>
 
-        <div className="center mb-10">
-          <div className="join gap-2 ">
-            <button className="join-item btn">«</button>
+        {pagination.total_pages > 1 && (
+          <div className="flex justify-center mb-10">
+            <div className="join gap-2">
+              <button
+                className="join-item btn"
+                disabled={page <= 1}
+                onClick={() => setSearchParams({ search, funding_area, page: String(page - 1) })}
+              >«</button>
 
-            <button className="join-item btn border-[#BDC9C5] ">1</button>
-            <button className="join-item btn">2</button>
-            <button className="join-item btn btn-disabled">...</button>
-            <button className="join-item btn">99</button>
-            <button className="join-item btn">100</button>
-            <button className="join-item btn">»</button>
+              {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  className={`join-item btn ${p === page ? "btn-active border-[#BDC9C5]" : ""}`}
+                  onClick={() => setSearchParams({ search, funding_area, page: String(p) })}
+                >{p}</button>
+              ))}
+
+              <button
+                className="join-item btn"
+                disabled={page >= pagination.total_pages}
+                onClick={() => setSearchParams({ search, funding_area, page: String(page + 1) })}
+              >»</button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
