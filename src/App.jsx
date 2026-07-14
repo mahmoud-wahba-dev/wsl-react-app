@@ -9,6 +9,10 @@ import InReview from "./pages/Auth/InReview";
 import MatchRequest from "./pages/MatchRequest";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import AdminRequests from "./pages/Admin/AdminRequests";
+import AdminDonors from "./pages/Admin/AdminDonors";
+import AdminUsers from "./pages/Admin/AdminUsers";
+import AdminLayout from "./Layout/AdminLayout";
 import useAuth from "./hooks/useAuth";
 import LoadingScreen from "./components/LoadingScreen";
 import AuthGuard from "./guards/AuthGuard";
@@ -57,9 +61,12 @@ const router = createBrowserRouter([
     element: <AdminRoute />,
     children: [
       {
-        element: <MasterLayout />,
+        element: <AdminLayout />,
         children: [
           { path: "/admin", element: <AdminDashboard /> },
+          { path: "/admin/requests", element: <AdminRequests /> },
+          { path: "/admin/donors", element: <AdminDonors /> },
+          { path: "/admin/users", element: <AdminUsers /> },
         ],
       },
     ],
