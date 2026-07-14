@@ -1,11 +1,13 @@
-import React from "react";
+import { useField } from "formik";
 
-const Textarea = ({placeholder}) => {
+const Textarea = ({ name, placeholder }) => {
+  const [field, meta] = useField(name);
   return (
     <textarea
-      className="textarea h-24 w-full"
+      {...field}
       placeholder={placeholder}
-    ></textarea>
+      className={`textarea h-24 w-full ${meta.touched && meta.error ? "textarea-error" : ""}`}
+    />
   );
 };
 

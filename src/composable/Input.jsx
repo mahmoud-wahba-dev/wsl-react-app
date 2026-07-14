@@ -1,7 +1,14 @@
-import React from "react";
+import { useField } from "formik";
 
-const Input = ({ placeholder }) => {
-  return <input type="text" placeholder={placeholder} className="input w-full" />;
+const Input = ({ name, placeholder }) => {
+  const [field, meta] = useField(name);
+  return (
+    <input
+      {...field}
+      placeholder={placeholder}
+      className={`input w-full ${meta.touched && meta.error ? "input-error" : ""}`}
+    />
+  );
 };
 
 export default Input;

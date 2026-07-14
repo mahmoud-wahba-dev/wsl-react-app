@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 const MatchDonorCard = ({ donor }) => {
   return (
     <div className="border border-[#BDC9C5] p-8 rounded-12px bg-white border-r-[6px] border-r-primary">
@@ -104,12 +105,12 @@ const MatchDonorCard = ({ donor }) => {
           </div>
           <div className="divider"></div>
           <div className="flex items-center gap-4">
-            <button className="btn btn-primary rounded-13px h-11 font-medium text-14px">
+            <Link to={"/match-request"} className="btn btn-primary rounded-13px h-11 font-medium text-14px">
               قدم الآن
-            </button>
-            <button className="btn btn-outline border-[#6E7A76] rounded-13px h-11 font-medium text-14px text-[#3E4946]">
+            </Link>
+            <Link to={"/match-request"} className="btn btn-outline border-[#6E7A76] rounded-13px h-11 font-medium text-14px text-[#3E4946]">
               عرض التفاصيل
-            </button>
+            </Link>
           </div>
         </div>
         <div>
