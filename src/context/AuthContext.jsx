@@ -1,8 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
-const baseURL = import.meta.env.VITE_BASE_URL;
-
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
@@ -27,39 +25,15 @@ const AuthProvider = ({ children }) => {
     setUser(null);
   }
 
-  const restoreSession = async () => {
-    const token = Cookies.get("access_token");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(`${baseURL}/api/auth/users/me/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      const result = await response.json();
-      if (!response.ok || !result.status) {
-        throw new Error(result.message || "Session expired");
-      }
-
-      setUser(result.data);
-    } catch (error) {
-      console.error(error);
-      Cookies.remove("access_token");
-      Cookies.remove("user");
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    restoreSession();
+    const token = Cookies.get("access_token");
+    const storedUser = Cookies.get("user");
+
+    if (token && storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
+    setLoading(false);
   }, []);
 
   return (

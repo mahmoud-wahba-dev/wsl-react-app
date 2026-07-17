@@ -30,37 +30,94 @@ const links = [
 const AdminSidebar = () => {
   return (
     <div className="drawer-side is-drawer-close:overflow-visible">
-      <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-      <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64 transition-all duration-300">
-        <div className="p-4 font-bold text-lg text-primary is-drawer-close:hidden">وصل</div>
-        <ul className="menu w-full grow">
-          {links.map((link) => (
-            <li key={link.to}>
-              <NavLink
-                to={link.to}
-                end={link.end}
-                className={({ isActive }) =>
-                  `is-drawer-close:tooltip is-drawer-close:tooltip-right ${isActive ? "active bg-primary text-white" : ""}`
-                }
-                data-tip={link.label}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                  strokeWidth="2"
-                  fill="none"
-                  stroke="currentColor"
-                  className="my-1.5 inline-block size-4"
+      <label
+        htmlFor="my-drawer-4"
+        aria-label="close sidebar"
+        className="drawer-overlay"
+      ></label>
+      <div className="flex min-h-full flex-col items-start bg-white is-drawer-close:w-14 is-drawer-open:w-64 transition-all duration-300">
+        <div className=" flex flex-col items-center w-full mb-6">
+          <div className="bg-primary is-drawer-close:!hidden is-drawer-close:size-10 is-drawer-open:size-16 center is-drawer-close:rounded-sm rounded-16px m-auto mt-10 mb-3 is-drawer-close:hidden">
+            <svg
+              className="is-drawer-close:size-4"
+              width="30"
+              height="30"
+              viewBox="0 0 30 30"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.5 24V13.5H7.5V24H4.5ZM13.5 24V13.5H16.5V24H13.5ZM0 30V27H30V30H0ZM22.5 24V13.5H25.5V24H22.5ZM0 10.5V7.5L15 0L30 7.5V10.5H0ZM6.675 7.5H15H23.325H6.675ZM6.675 7.5H23.325L15 3.375L6.675 7.5Z"
+                fill="white"
+              />
+            </svg>
+          </div>
+          <div className="font-bold text-32px text-center text-primary is-drawer-close:hidden">
+            نظام المنح
+          </div>
+          <p className="text-center font-normal text-12px text-center is-drawer-close:hidden">
+            لوحة التحكم الإدارية
+          </p>
+        </div>
+        <div className="flex flex-col justify-between grow w-full">
+          <ul className="menu w-full grow ">
+            {links.map((link) => (
+              <li key={link.to}>
+                <NavLink
+                  to={link.to}
+                  end={link.end}
+                  className={({ isActive }) =>
+                    `is-drawer-close:tooltip is-drawer-close:tooltip-right ${isActive ? "active bg-primary text-white" : ""}`
+                  }
+                  data-tip={link.label}
                 >
-                  <path d={link.icon}></path>
-                </svg>
-                <span className="is-drawer-close:hidden">{link.label}</span>
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2"
+                    fill="none"
+                    stroke="currentColor"
+                    className="my-1.5 inline-block size-4"
+                  >
+                    <path d={link.icon}></path>
+                  </svg>
+                  <span className="is-drawer-close:hidden">{link.label}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+          <div className="p-4 bg-[#EEF4FF] rounded-12px center gap-4">
+            <div className="is-drawer-close:hidden">
+              <p className="font-bold text-14px text-[#0D1D2C]">أحمد المسؤول</p>
+              <p className="font-normal text-12px text-[#3E4946]">
+                مدير النظام
+              </p>
+            </div>
+
+            <div className="dropdown dropdown-top">
+              <div tabIndex={0} role="button" className="btn m-1 is-drawer-close:m-0 is-drawer-close:p-0" >
+                <div className="avatar avatar-placeholder">
+                  <div className="bg-neutral text-neutral-content w-8 rounded-full">
+                    <span className="text-xs">AD</span>
+                  </div>
+                </div>
+              </div>
+              <ul
+                tabIndex="-1"
+                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+              >
+                <li>
+                  <a>Item 1</a>
+                </li>
+                <li>
+                  <a>Item 2</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

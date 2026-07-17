@@ -1,26 +1,462 @@
+import { Link } from "react-router-dom";
+import BarChart from "../../components/BarChart";
+import SVGContainer from "./../../../node_modules/apexcharts/src/svg/SVGContainer";
+import { api } from "../../utils/api";
+import { useEffect, useState } from "react";
+
 const AdminDashboard = () => {
+  const [dashStats , setDashstats]  = useState([])
+  const getData = async () => {
+    const res = await api("/api/admin/stats/");
+    const { data } = res;
+    setDashstats(data)
+  };
+  useEffect(() => {
+    getData();
+        console.log(dashStats);
+
+  }, []);
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">لوحة التحكم</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="stat bg-base-200 rounded-box">
-          <div className="stat-title">إجمالي الطلبات</div>
-          <div className="stat-value text-primary">—</div>
+    <section>
+      <div className="container">
+        <div className="flex items-center justify-between my-10">
+          <div>
+            <h1 className="text-32px text-[#0D1D2C] font-bold mb-1">
+              إدارة المستخدمين
+            </h1>
+            <p className="font-normal text-base text-[#3E4946]">
+              إدارة وتحديث صلاحيات وحالات مستخدمي المنصة.
+            </p>
+          </div>
+          <Link className="btn btn-primary font-medium text-14px">
+            إضافة مستخدم جديد
+            <span>
+              <svg
+                width="22"
+                height="16"
+                viewBox="0 0 22 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M17 10V7H14V5H17V2H19V5H22V7H19V10H17ZM8 8C6.9 8 5.95833 7.60833 5.175 6.825C4.39167 6.04167 4 5.1 4 4C4 2.9 4.39167 1.95833 5.175 1.175C5.95833 0.391667 6.9 0 8 0C9.1 0 10.0417 0.391667 10.825 1.175C11.6083 1.95833 12 2.9 12 4C12 5.1 11.6083 6.04167 10.825 6.825C10.0417 7.60833 9.1 8 8 8ZM0 16V13.2C0 12.6333 0.145833 12.1125 0.4375 11.6375C0.729167 11.1625 1.11667 10.8 1.6 10.55C2.63333 10.0333 3.68333 9.64583 4.75 9.3875C5.81667 9.12917 6.9 9 8 9C9.1 9 10.1833 9.12917 11.25 9.3875C12.3167 9.64583 13.3667 10.0333 14.4 10.55C14.8833 10.8 15.2708 11.1625 15.5625 11.6375C15.8542 12.1125 16 12.6333 16 13.2V16H0ZM2 14H14V13.2C14 13.0167 13.9542 12.85 13.8625 12.7C13.7708 12.55 13.65 12.4333 13.5 12.35C12.6 11.9 11.6917 11.5625 10.775 11.3375C9.85833 11.1125 8.93333 11 8 11C7.06667 11 6.14167 11.1125 5.225 11.3375C4.30833 11.5625 3.4 11.9 2.5 12.35C2.35 12.4333 2.22917 12.55 2.1375 12.7C2.04583 12.85 2 13.0167 2 13.2V14ZM8 6C8.55 6 9.02083 5.80417 9.4125 5.4125C9.80417 5.02083 10 4.55 10 4C10 3.45 9.80417 2.97917 9.4125 2.5875C9.02083 2.19583 8.55 2 8 2C7.45 2 6.97917 2.19583 6.5875 2.5875C6.19583 2.97917 6 3.45 6 4C6 4.55 6.19583 5.02083 6.5875 5.4125C6.97917 5.80417 7.45 6 8 6Z"
+                  fill="white"
+                />
+              </svg>
+            </span>
+          </Link>
         </div>
-        <div className="stat bg-base-200 rounded-box">
-          <div className="stat-title">المؤسسات المانحة</div>
-          <div className="stat-value text-primary">—</div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-10">
+          <div className="md:col-span-4 h-fit min-h-32 rounded-12px bg-[#FFD578] shadow-xl p-6 flex justify-between ">
+            <div className="">
+              <div className="font-bold text-14px text-[#795A03]">
+                الحسابات النشطة
+              </div>
+              <p>98.2%</p>
+              <div className="font-normal text-12px text-[#795A03]">
+                كفاءة تشغيل الحسابات
+              </div>
+            </div>
+            <div>
+              <svg
+                width="20"
+                height="25"
+                viewBox="0 0 20 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8.6875 16.9375L15.75 9.875L13.9688 8.09375L8.6875 13.375L6.0625 10.75L4.28125 12.5312L8.6875 16.9375ZM10 25C7.10417 24.2708 4.71354 22.6094 2.82812 20.0156C0.942708 17.4219 0 14.5417 0 11.375V3.75L10 0L20 3.75V11.375C20 14.5417 19.0573 17.4219 17.1719 20.0156C15.2865 22.6094 12.8958 24.2708 10 25ZM10 22.375C12.1667 21.6875 13.9583 20.3125 15.375 18.25C16.7917 16.1875 17.5 13.8958 17.5 11.375V5.46875L10 2.65625L2.5 5.46875V11.375C2.5 13.8958 3.20833 16.1875 4.625 18.25C6.04167 20.3125 7.83333 21.6875 10 22.375Z"
+                  fill="#795A03"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="md:col-span-8 rounded-12px bg-[#FFFFFFCC] shadow-xl p-6 gap-3 flex justify-between ">
+            <div className="">
+              <div className="font-normal text-12px text-[#3E4946]">
+                إجمالي المستخدمين
+              </div>
+              <p className="font-bold text-48px text-primary my-1">1,284</p>
+              <div className="font-normal text-12px text-[#006153] flex items-center gap-1">
+                +12% هذا الشهر
+                <span></span>
+                <svg
+                  width="12"
+                  height="7"
+                  viewBox="0 0 12 7"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M0.816667 7L0 6.18333L4.31667 1.8375L6.65 4.17083L9.68333 1.16667H8.16667V0H11.6667V3.5H10.5V1.98333L6.65 5.83333L4.31667 3.5L0.816667 7Z"
+                    fill="#006153"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div className="grow">
+              <BarChart
+                data={[
+                  { x: "يناير", y: 30 },
+                  { x: "فبراير", y: 40 },
+                  { x: "مارس", y: 35 },
+                  { x: "أبريل", y: 50 },
+                  { x: "مايو", y: 45 },
+                  { x: "يونيو", y: 60 },
+                ]}
+                height={120}
+              />
+            </div>
+          </div>
         </div>
-        <div className="stat bg-base-200 rounded-box">
-          <div className="stat-title">المستخدمين</div>
-          <div className="stat-value text-primary">—</div>
+
+        <div className="mb-10">
+          <div className="flex items-center justify-between bg-[#EEF4FF] p-6 rounded-tr-25px rounded-tl-25px">
+            <div className="w-[40%]">
+              <label className="input">
+                <svg
+                  className="h-[1em] opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                  </g>
+                </svg>
+                <input
+                  type="search"
+                  required
+                  placeholder="بحث باسم المستخدم أو البريد..."
+                />
+              </label>
+            </div>
+            <div className="dropdown">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn m-1 font-medium text-14px text-[#0D1D2C] bg-white"
+              >
+                <svg
+                  width="18"
+                  height="12"
+                  viewBox="0 0 18 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 12V10H11V12H7ZM3 7V5H15V7H3ZM0 2V0H18V2H0Z"
+                    fill="#0D1D2C"
+                  />
+                </svg>
+                تصفية النتائج
+              </div>
+              <ul
+                tabIndex="-1"
+                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+              >
+                <li>
+                  <a onClick={() => setSearchParams({ search, page: "1" })}>
+                    الكل
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() =>
+                      setSearchParams({
+                        search,
+                        funding_area: "التعليم",
+                        page: "1",
+                      })
+                    }
+                  >
+                    التعليم
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() =>
+                      setSearchParams({
+                        search,
+                        funding_area: "الصحة",
+                        page: "1",
+                      })
+                    }
+                  >
+                    الصحة
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="table ">
+              {/* head */}
+              <thead className="bg-[#DAEAFF]">
+                <tr className="">
+                  <th className="font-medium text-14px text-[#3E4946] py-6">
+                    الاسم الكامل
+                  </th>
+                  <th className="font-medium text-14px text-[#3E4946] py-6">
+                    البريد الإلكتروني
+                  </th>
+                  <th className="font-medium text-14px text-[#3E4946] py-6">
+                    الدور
+                  </th>
+                  <th className="font-medium text-14px text-[#3E4946] py-6">
+                    الحالة
+                  </th>
+                  <th className="font-medium text-14px text-[#3E4946] py-6">
+                    الإجراءات
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                            alt="Avatar Tailwind CSS Component"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-base text-[#0D1D2C]">
+                          محمد العتيبي
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="font-normal text-base text-[#3E4946 ]">
+                    m.otaibi@grants.sa
+                  </td>
+                  <td>
+                    <div className="badge badge-primary">مدير (Admin)</div>
+                  </td>
+                  <td>
+                    <div className="font-normal text-12px text-primary">
+                      نشط
+                      <span></span>
+                    </div>
+                  </td>
+                  <th>
+                    <button className="btn btn-outline btn-primary font-normal text-12px">
+                      إلغاء التفعيل
+                    </button>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                            alt="Avatar Tailwind CSS Component"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-base text-[#0D1D2C]">
+                          محمد العتيبي
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="font-normal text-base text-[#3E4946 ]">
+                    m.otaibi@grants.sa
+                  </td>
+                  <td>
+                    <div className="badge badge-primary">مدير (Admin)</div>
+                  </td>
+                  <td>
+                    <div className="font-normal text-12px text-primary">
+                      نشط
+                      <span></span>
+                    </div>
+                  </td>
+                  <th>
+                    <button className="btn btn-outline btn-primary font-normal text-12px">
+                      إلغاء التفعيل
+                    </button>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                            alt="Avatar Tailwind CSS Component"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-base text-[#0D1D2C]">
+                          محمد العتيبي
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="font-normal text-base text-[#3E4946 ]">
+                    m.otaibi@grants.sa
+                  </td>
+                  <td>
+                    <div className="badge badge-primary">مدير (Admin)</div>
+                  </td>
+                  <td>
+                    <div className="font-normal text-12px text-primary">
+                      نشط
+                      <span></span>
+                    </div>
+                  </td>
+                  <th>
+                    <button className="btn btn-outline btn-primary font-normal text-12px">
+                      إلغاء التفعيل
+                    </button>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                            alt="Avatar Tailwind CSS Component"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-base text-[#0D1D2C]">
+                          محمد العتيبي
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="font-normal text-base text-[#3E4946 ]">
+                    m.otaibi@grants.sa
+                  </td>
+                  <td>
+                    <div className="badge badge-primary">مدير (Admin)</div>
+                  </td>
+                  <td>
+                    <div className="font-normal text-12px text-primary">
+                      نشط
+                      <span></span>
+                    </div>
+                  </td>
+                  <th>
+                    <button className="btn btn-outline btn-primary font-normal text-12px">
+                      إلغاء التفعيل
+                    </button>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                            alt="Avatar Tailwind CSS Component"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-base text-[#0D1D2C]">
+                          محمد العتيبي
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="font-normal text-base text-[#3E4946 ]">
+                    m.otaibi@grants.sa
+                  </td>
+                  <td>
+                    <div className="badge badge-primary">مدير (Admin)</div>
+                  </td>
+                  <td>
+                    <div className="font-normal text-12px text-primary">
+                      نشط
+                      <span></span>
+                    </div>
+                  </td>
+                  <th>
+                    <button className="btn btn-outline btn-primary font-normal text-12px">
+                      إلغاء التفعيل
+                    </button>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="avatar">
+                        <div className="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                            alt="Avatar Tailwind CSS Component"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-bold text-base text-[#0D1D2C]">
+                          محمد العتيبي
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="font-normal text-base text-[#3E4946 ]">
+                    m.otaibi@grants.sa
+                  </td>
+                  <td>
+                    <div className="badge badge-primary">مدير (Admin)</div>
+                  </td>
+                  <td>
+                    <div className="font-normal text-12px text-primary">
+                      نشط
+                      <span></span>
+                    </div>
+                  </td>
+                  <th>
+                    <button className="btn btn-outline btn-primary font-normal text-12px">
+                      إلغاء التفعيل
+                    </button>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="stat bg-base-200 rounded-box">
-          <div className="stat-title">طلبات المطابقة</div>
-          <div className="stat-value text-primary">—</div>
+        <div className="flex items-center justify-between">
+          <div className="flex justify-center mb-10">
+            <div className="join gap-2">
+              <button className="join-item btn">«</button>
+
+              <button className={`join-item btn `}>1</button>
+
+              <button className="join-item btn">»</button>
+            </div>
+          </div>
+          <p className="font-normal text-12px text-[#3E4946]">
+            عرض 1-4 من أصل 1284 مستخدم
+          </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
