@@ -1,21 +1,68 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import BarChart from "../../components/BarChart";
-import SVGContainer from "./../../../node_modules/apexcharts/src/svg/SVGContainer";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
 
-const AdminDashboard = () => {
-  const [dashStats , setDashstats]  = useState([])
-  const getData = async () => {
-    const res = await api("/api/admin/stats/");
-    const { data } = res;
-    setDashstats(data)
-  };
-  useEffect(() => {
-    getData();
-        console.log(dashStats);
+const monthNames = [
+  "يناير",
+  "فبراير",
+  "مارس",
+  "أبريل",
+  "مايو",
+  "يونيو",
+  "يوليو",
+  "أغسطس",
+  "سبتمبر",
+  "أكتوبر",
+  "نوفمبر",
+  "ديسمبر",
+];
 
+const handleStatus = (itemID) => {
+  console.log(itemID , "click");
+};
+
+const AdminDashboard = () => {
+  const [dashStats, setDashStats] = useState(null);
+  const [userTable, setUserTable] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = searchParams.get("search") || "";
+
+  const getDashStats = async () => {
+    try {
+      const res = await api("/api/admin/stats/");
+      setDashStats(res.data);
+    } catch {
+      setDashStats(null);
+    }
+  };
+
+  const getUsers = async () => {
+    try {
+      const res = await api("/api/admin/users/");
+      setUserTable(res.data);
+    } catch (error) {
+      setUserTable(null);
+    }
+  };
+
+  useEffect(() => {
+    getDashStats();
+    getUsers();
   }, []);
+
+  const totalUsers = dashStats?.total_users ?? 0;
+  const verifiedPct = dashStats?.verified_percentage ?? 0;
+  const chartData = (dashStats?.registrations_chart || []).map((item) => {
+    const month = new Date(item.month + "-01").getMonth();
+    return { x: monthNames[month], y: item.count };
+  });
+
+  const users = userTable?.results || [];
+  const count = userTable?.count || 0;
+  const totalPages = userTable?.total_pages || 1;
+  const currentPage = userTable?.current_page || 1;
+
   return (
     <section>
       <div className="container">
@@ -48,12 +95,12 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-10">
-          <div className="md:col-span-4 h-fit min-h-32 rounded-12px bg-[#FFD578] shadow-xl p-6 flex justify-between ">
-            <div className="">
+          <div className="md:col-span-4 h-fit min-h-32 rounded-12px bg-[#FFD578] shadow-xl p-6 flex justify-between">
+            <div>
               <div className="font-bold text-14px text-[#795A03]">
                 الحسابات النشطة
               </div>
-              <p>98.2%</p>
+              <p className="text-3xl font-bold my-1">{verifiedPct}%</p>
               <div className="font-normal text-12px text-[#795A03]">
                 كفاءة تشغيل الحسابات
               </div>
@@ -74,41 +121,20 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="md:col-span-8 rounded-12px bg-[#FFFFFFCC] shadow-xl p-6 gap-3 flex justify-between ">
-            <div className="">
+          <div className="md:col-span-8 rounded-12px bg-[#FFFFFFCC] shadow-xl p-6 gap-3 flex justify-between">
+            <div>
               <div className="font-normal text-12px text-[#3E4946]">
                 إجمالي المستخدمين
               </div>
-              <p className="font-bold text-48px text-primary my-1">1,284</p>
+              <p className="font-bold text-48px text-primary my-1">
+                {totalUsers.toLocaleString()}
+              </p>
               <div className="font-normal text-12px text-[#006153] flex items-center gap-1">
-                +12% هذا الشهر
-                <span></span>
-                <svg
-                  width="12"
-                  height="7"
-                  viewBox="0 0 12 7"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M0.816667 7L0 6.18333L4.31667 1.8375L6.65 4.17083L9.68333 1.16667H8.16667V0H11.6667V3.5H10.5V1.98333L6.65 5.83333L4.31667 3.5L0.816667 7Z"
-                    fill="#006153"
-                  />
-                </svg>
+                إجمالي المسجلين في المنصة
               </div>
             </div>
             <div className="grow">
-              <BarChart
-                data={[
-                  { x: "يناير", y: 30 },
-                  { x: "فبراير", y: 40 },
-                  { x: "مارس", y: 35 },
-                  { x: "أبريل", y: 50 },
-                  { x: "مايو", y: 45 },
-                  { x: "يونيو", y: 60 },
-                ]}
-                height={120}
-              />
+              <BarChart data={chartData} height={250} />
             </div>
           </div>
         </div>
@@ -165,34 +191,16 @@ const AdminDashboard = () => {
                 className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
               >
                 <li>
-                  <a onClick={() => setSearchParams({ search, page: "1" })}>
-                    الكل
+                  <a onClick={() => setSearchParams({ search })}>الكل</a>
+                </li>
+                <li>
+                  <a onClick={() => setSearchParams({ search, role: "admin" })}>
+                    مدير
                   </a>
                 </li>
                 <li>
-                  <a
-                    onClick={() =>
-                      setSearchParams({
-                        search,
-                        funding_area: "التعليم",
-                        page: "1",
-                      })
-                    }
-                  >
-                    التعليم
-                  </a>
-                </li>
-                <li>
-                  <a
-                    onClick={() =>
-                      setSearchParams({
-                        search,
-                        funding_area: "الصحة",
-                        page: "1",
-                      })
-                    }
-                  >
-                    الصحة
+                  <a onClick={() => setSearchParams({ search, role: "user" })}>
+                    مستخدم
                   </a>
                 </li>
               </ul>
@@ -221,222 +229,51 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                            alt="Avatar Tailwind CSS Component"
-                          />
+                {users.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle h-12 w-12">
+                            <img
+                              src="https://img.daisyui.com/images/profile/demo/2@94.webp"
+                              alt="Avatar Tailwind CSS Component"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-bold text-base text-[#0D1D2C]">
+                            {item.full_name}
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <div className="font-bold text-base text-[#0D1D2C]">
-                          محمد العتيبي
-                        </div>
+                    </td>
+                    <td className="font-normal text-base text-[#3E4946 ]">
+                      {item.email}
+                    </td>
+                    <td>
+                      <div className="badge badge-primary">{item.role}</div>
+                    </td>
+                    <td>
+                      <div className="font-normal text-12px text-primary">
+                        {item.is_active == true ? "نشط" : "غير نشط"}
+                        <span></span>
                       </div>
-                    </div>
-                  </td>
-                  <td className="font-normal text-base text-[#3E4946 ]">
-                    m.otaibi@grants.sa
-                  </td>
-                  <td>
-                    <div className="badge badge-primary">مدير (Admin)</div>
-                  </td>
-                  <td>
-                    <div className="font-normal text-12px text-primary">
-                      نشط
-                      <span></span>
-                    </div>
-                  </td>
-                  <th>
-                    <button className="btn btn-outline btn-primary font-normal text-12px">
-                      إلغاء التفعيل
-                    </button>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-bold text-base text-[#0D1D2C]">
-                          محمد العتيبي
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="font-normal text-base text-[#3E4946 ]">
-                    m.otaibi@grants.sa
-                  </td>
-                  <td>
-                    <div className="badge badge-primary">مدير (Admin)</div>
-                  </td>
-                  <td>
-                    <div className="font-normal text-12px text-primary">
-                      نشط
-                      <span></span>
-                    </div>
-                  </td>
-                  <th>
-                    <button className="btn btn-outline btn-primary font-normal text-12px">
-                      إلغاء التفعيل
-                    </button>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-bold text-base text-[#0D1D2C]">
-                          محمد العتيبي
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="font-normal text-base text-[#3E4946 ]">
-                    m.otaibi@grants.sa
-                  </td>
-                  <td>
-                    <div className="badge badge-primary">مدير (Admin)</div>
-                  </td>
-                  <td>
-                    <div className="font-normal text-12px text-primary">
-                      نشط
-                      <span></span>
-                    </div>
-                  </td>
-                  <th>
-                    <button className="btn btn-outline btn-primary font-normal text-12px">
-                      إلغاء التفعيل
-                    </button>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-bold text-base text-[#0D1D2C]">
-                          محمد العتيبي
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="font-normal text-base text-[#3E4946 ]">
-                    m.otaibi@grants.sa
-                  </td>
-                  <td>
-                    <div className="badge badge-primary">مدير (Admin)</div>
-                  </td>
-                  <td>
-                    <div className="font-normal text-12px text-primary">
-                      نشط
-                      <span></span>
-                    </div>
-                  </td>
-                  <th>
-                    <button className="btn btn-outline btn-primary font-normal text-12px">
-                      إلغاء التفعيل
-                    </button>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-bold text-base text-[#0D1D2C]">
-                          محمد العتيبي
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="font-normal text-base text-[#3E4946 ]">
-                    m.otaibi@grants.sa
-                  </td>
-                  <td>
-                    <div className="badge badge-primary">مدير (Admin)</div>
-                  </td>
-                  <td>
-                    <div className="font-normal text-12px text-primary">
-                      نشط
-                      <span></span>
-                    </div>
-                  </td>
-                  <th>
-                    <button className="btn btn-outline btn-primary font-normal text-12px">
-                      إلغاء التفعيل
-                    </button>
-                  </th>
-                </tr>
-                <tr>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://img.daisyui.com/images/profile/demo/2@94.webp"
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-bold text-base text-[#0D1D2C]">
-                          محمد العتيبي
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="font-normal text-base text-[#3E4946 ]">
-                    m.otaibi@grants.sa
-                  </td>
-                  <td>
-                    <div className="badge badge-primary">مدير (Admin)</div>
-                  </td>
-                  <td>
-                    <div className="font-normal text-12px text-primary">
-                      نشط
-                      <span></span>
-                    </div>
-                  </td>
-                  <th>
-                    <button className="btn btn-outline btn-primary font-normal text-12px">
-                      إلغاء التفعيل
-                    </button>
-                  </th>
-                </tr>
+                    </td>
+                    {item.role == "user" ? (
+                      <th>
+                        <button
+                          className="btn btn-outline btn-primary font-normal text-12px"
+                          onClick={() => handleStatus(item.id)}
+                        >
+                          إلغاء التفعيل
+                        </button>
+                      </th>
+                    ) : (
+                      ""
+                    )}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
@@ -452,7 +289,7 @@ const AdminDashboard = () => {
             </div>
           </div>
           <p className="font-normal text-12px text-[#3E4946]">
-            عرض 1-4 من أصل 1284 مستخدم
+            عرض 1-{users.length} من أصل {count} مستخدم
           </p>
         </div>
       </div>

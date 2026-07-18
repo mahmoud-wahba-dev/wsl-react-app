@@ -4,7 +4,20 @@ const BarChart = ({ data, height = 300, title = "" }) => {
   const options = {
     chart: {
       type: "bar",
-      toolbar: { show: false },
+      toolbar: { show: true },
+      animations: {
+        enabled: true,
+        easing: "easeinout",
+        speed: 800,
+        animateGradually: {
+          enabled: true,
+          delay: 150,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350,
+        },
+      },
     },
     plotOptions: {
       bar: {
@@ -24,7 +37,7 @@ const BarChart = ({ data, height = 300, title = "" }) => {
         fontWeight: "bold",
         colors: ["#3E4946"],
       },
-      formatter: (val) => val + "%",
+      formatter: (val) => val,
     },
     stroke: { show: false },
     xaxis: {
@@ -74,7 +87,13 @@ const BarChart = ({ data, height = 300, title = "" }) => {
   ];
 
   return (
-    <Chart options={options} series={series} type="bar" height={height} />
+    <Chart
+      key={data.length ? data.map((d) => d.y).join(",") : "empty"}
+      options={options}
+      series={series}
+      type="bar"
+      height={height}
+    />
   );
 };
 
