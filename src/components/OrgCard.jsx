@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import orgImg from "../assets/imgs/org.jpg";
 
 const OrgCard = ({ item }) => {
@@ -7,7 +8,7 @@ const OrgCard = ({ item }) => {
   const loc = location || "السعودية";
   
   return (
-    <div className="rounded-12px bg-white shadow-2xl p-6">
+    <div className="rounded-12px bg-white shadow-2xl p-6 flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <div className="size-16 center bg-[#E4EFFF] rounded-8px">
           <img src={logoSrc} className="size-full object-contain" alt="org" />
@@ -71,10 +72,10 @@ const OrgCard = ({ item }) => {
           </div>
         )}
       </div>
-      <div>
-        <button className="btn btn-primary btn-block font-medium text-14px">
+      <div className="mt-auto">
+        <Link to={`/organizations/${item.id}`} className="btn btn-primary btn-block font-medium text-14px">
           عرض التفاصيل
-        </button>
+        </Link>
       </div>
     </div>
   );
