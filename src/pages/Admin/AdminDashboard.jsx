@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import BarChart from "../../components/BarChart";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
+import Toast from "../../../public/services/toast";
 
 const monthNames = [
   "يناير",
@@ -18,10 +19,6 @@ const monthNames = [
   "ديسمبر",
 ];
 
-const handleStatus = (itemID) => {
-  console.log(itemID , "click");
-};
-
 const AdminDashboard = () => {
   const [dashStats, setDashStats] = useState(null);
   const [userTable, setUserTable] = useState(null);
@@ -32,7 +29,6 @@ const AdminDashboard = () => {
   const page = Number(searchParams.get("page")) || 1;
 
   const getDashStats = async () => {
-    
     try {
       const res = await api("/api/admin/stats/");
       setDashStats(res.data);
@@ -44,7 +40,9 @@ const AdminDashboard = () => {
   const getUsers = async () => {
     setLoading(true);
     try {
-      const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
+      const query = searchParams.toString()
+        ? `?${searchParams.toString()}`
+        : "";
       const res = await api(`/api/admin/users/${query}`);
       setUserTable(res.data);
     } catch {
@@ -74,6 +72,30 @@ const AdminDashboard = () => {
   const totalPages = userTable?.total_pages || 1;
   const currentPage = userTable?.current_page || 1;
 
+  const handleStatus = async (id, isVerified) => {
+    const previous = userTable;
+
+    setUserTable((prev) => ({
+      ...prev,
+      results: (prev?.results || []).map((u) =>
+        u.id === id ? { ...u, isVerified: !isVerified } : u
+      ),
+    }));
+
+    try {
+      const endpoint = isVerified
+        ? `/api/auth/users/${id}/unverify/`
+        : `/api/auth/users/${id}/verify/`;
+
+      const res = await api(endpoint, { method: "POST" });
+      Toast.success(res.message);
+      getUsers();
+    } catch (error) {
+      console.log(error);
+      setUserTable(previous);
+      Toast.error(error?.message || "حدث خطأ");
+    }
+  };
   return (
     <section>
       <div className="container">
@@ -204,9 +226,29 @@ const AdminDashboard = () => {
                 tabIndex="-1"
                 className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
               >
-                <li><a onClick={() => setSearchParams({ search, page: "1" })}>الكل</a></li>
-                <li><a onClick={() => setSearchParams({ search, role: "admin", page: "1" })}>مدير</a></li>
-                <li><a onClick={() => setSearchParams({ search, role: "user", page: "1" })}>مستخدم</a></li>
+                <li>
+                  <a onClick={() => setSearchParams({ search, page: "1" })}>
+                    الكل
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() =>
+                      setSearchParams({ search, role: "admin", page: "1" })
+                    }
+                  >
+                    مدير
+                  </a>
+                </li>
+                <li>
+                  <a
+                    onClick={() =>
+                      setSearchParams({ search, role: "user", page: "1" })
+                    }
+                  >
+                    مستخدم
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -234,13 +276,17 @@ const AdminDashboard = () => {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={5} className="text-center py-10"><span className="loading loading-spinner loading-lg text-primary"></span></td></tr>
+                  <tr>
+                    <td colSpan={5} className="text-center py-10">
+                      <span className="loading loading-spinner loading-lg text-primary"></span>
+                    </td>
+                  </tr>
                 ) : users.length > 0 ? (
                   users.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <div className="flex items-center gap-3">
-                        {/* <div className="avatar">
+                    <tr key={item.id}>
+                      <td>
+                        <div className="flex items-center gap-3">
+                          {/* <div className="avatar">
                           <div className="mask mask-squircle h-12 w-12">
                             <img
                               src="https://img.daisyui.com/images/profile/demo/2@94.webp"
@@ -248,73 +294,95 @@ const AdminDashboard = () => {
                             />
                           </div>
                         </div> */}
-                        <div>
-                          <div className="font-bold text-base text-[#0D1D2C]">
-                            {item.full_name}
+                          <div>
+                            <div className="font-bold text-base text-[#0D1D2C]">
+                              {item.full_name}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="font-normal text-base text-[#3E4946 ]">
-                      {item.email}
-                    </td>
-                    <td>
-                      <div className="badge badge-primary">{item.role}</div>
-                    </td>
-                    <td>
-                      <div className="font-normal text-12px text-primary">
-                        {item.is_active == true ? "نشط" : "غير نشط"}
-                        <span></span>
-                      </div>
-                    </td>
-                    {item.role == "user" ? (
-                      <th>
-                        <button
-                          className="btn btn-outline btn-primary font-normal text-12px"
-                          onClick={() => handleStatus(item.id)}
+                      </td>
+                      <td className="font-normal text-base text-[#3E4946 ]">
+                        {item.email}
+                      </td>
+                      <td>
+                        <div className="badge">{item.role}</div>
+                      </td>
+                      <td>
+                        <div
+                          className={`font-normal text-12px ${item.is_verified  ? "text-primary" : "text-error"}`}
                         >
-                          إلغاء التفعيل
-                        </button>
-                      </th>
-                    ) : (
-                      <th></th>
-                    )}
-                  </tr>
+                          {item.is_verified == true ? "نشط" : "غير نشط"}
+                          <span></span>
+                        </div>
+                      </td>
+                      {item.role == "user" ? (
+                        <th>
+                          <button
+                            className={`btn btn-outline font-normal text-12px ${item.is_verified ? "btn-error" : "btn-primary"}`}
+                            onClick={() =>
+                              handleStatus(item.id, item.is_verified)
+                            }
+                          >
+                            {item.is_verified ? " إلغاء التفعيل" : "تفعيل"}
+                          </button>
+                        </th>
+                      ) : (
+                        <th></th>
+                      )}
+                    </tr>
                   ))
                 ) : (
-                  <tr><td colSpan={5} className="text-center py-10 text-gray-500">لا يوجد مستخدمين</td></tr>
+                  <tr>
+                    <td colSpan={5} className="text-center py-10 text-gray-500">
+                      لا يوجد مستخدمين
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
           </div>
         </div>
         {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <div className="flex justify-center mb-10">
-            <div className="join gap-2">
-              <button
-                className="join-item btn"
-                disabled={page <= 1}
-                onClick={() => setSearchParams({ search, role, page: String(page - 1) })}
-              >«</button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+          <div className="flex items-center justify-between">
+            <div className="flex justify-center mb-10">
+              <div className="join gap-2">
                 <button
-                  key={p}
-                  className={`join-item btn ${p === page ? "btn-active" : ""}`}
-                  onClick={() => setSearchParams({ search, role, page: String(p) })}
-                >{p}</button>
-              ))}
-              <button
-                className="join-item btn"
-                disabled={page >= totalPages}
-                onClick={() => setSearchParams({ search, role, page: String(page + 1) })}
-              >»</button>
+                  className="join-item btn"
+                  disabled={page <= 1}
+                  onClick={() =>
+                    setSearchParams({ search, role, page: String(page - 1) })
+                  }
+                >
+                  «
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (p) => (
+                    <button
+                      key={p}
+                      className={`join-item btn ${p === page ? "btn-active" : ""}`}
+                      onClick={() =>
+                        setSearchParams({ search, role, page: String(p) })
+                      }
+                    >
+                      {p}
+                    </button>
+                  ),
+                )}
+                <button
+                  className="join-item btn"
+                  disabled={page >= totalPages}
+                  onClick={() =>
+                    setSearchParams({ search, role, page: String(page + 1) })
+                  }
+                >
+                  »
+                </button>
+              </div>
             </div>
+            <p className="font-normal text-12px text-[#3E4946]">
+              عرض 1-{users.length} من أصل {count} مستخدم
+            </p>
           </div>
-          <p className="font-normal text-12px text-[#3E4946]">
-            عرض 1-{users.length} من أصل {count} مستخدم
-          </p>
-        </div>
         )}
       </div>
     </section>

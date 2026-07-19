@@ -7,7 +7,7 @@ const MasterLayout = () => {
   return (
     <>
       <Navbar />
-      <main className="min-h-[70vh]">
+      <main className="min-h-[90vh]">
         <Outlet />
       </main>
       <Footer />
