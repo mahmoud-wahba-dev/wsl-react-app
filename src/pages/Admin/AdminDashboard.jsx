@@ -25,10 +25,14 @@ const handleStatus = (itemID) => {
 const AdminDashboard = () => {
   const [dashStats, setDashStats] = useState(null);
   const [userTable, setUserTable] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
+  const role = searchParams.get("role") || "";
+  const page = Number(searchParams.get("page")) || 1;
 
   const getDashStats = async () => {
+    
     try {
       const res = await api("/api/admin/stats/");
       setDashStats(res.data);
@@ -38,18 +42,25 @@ const AdminDashboard = () => {
   };
 
   const getUsers = async () => {
+    setLoading(true);
     try {
-      const res = await api("/api/admin/users/");
+      const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
+      const res = await api(`/api/admin/users/${query}`);
       setUserTable(res.data);
-    } catch (error) {
+    } catch {
       setUserTable(null);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     getDashStats();
-    getUsers();
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => getUsers(), search ? 500 : 0);
+    return () => clearTimeout(timer);
+  }, [search, role, page]);
 
   const totalUsers = dashStats?.total_users ?? 0;
   const verifiedPct = dashStats?.verified_percentage ?? 0;
@@ -75,7 +86,7 @@ const AdminDashboard = () => {
               إدارة وتحديث صلاحيات وحالات مستخدمي المنصة.
             </p>
           </div>
-          <Link className="btn btn-primary font-medium text-14px">
+          {/* <Link className="btn btn-primary font-medium text-14px">
             إضافة مستخدم جديد
             <span>
               <svg
@@ -91,7 +102,7 @@ const AdminDashboard = () => {
                 />
               </svg>
             </span>
-          </Link>
+          </Link> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-10">
@@ -161,8 +172,11 @@ const AdminDashboard = () => {
                 </svg>
                 <input
                   type="search"
-                  required
                   placeholder="بحث باسم المستخدم أو البريد..."
+                  value={search}
+                  onChange={(e) =>
+                    setSearchParams({ search: e.target.value, role, page: "1" })
+                  }
                 />
               </label>
             </div>
@@ -190,19 +204,9 @@ const AdminDashboard = () => {
                 tabIndex="-1"
                 className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
               >
-                <li>
-                  <a onClick={() => setSearchParams({ search })}>الكل</a>
-                </li>
-                <li>
-                  <a onClick={() => setSearchParams({ search, role: "admin" })}>
-                    مدير
-                  </a>
-                </li>
-                <li>
-                  <a onClick={() => setSearchParams({ search, role: "user" })}>
-                    مستخدم
-                  </a>
-                </li>
+                <li><a onClick={() => setSearchParams({ search, page: "1" })}>الكل</a></li>
+                <li><a onClick={() => setSearchParams({ search, role: "admin", page: "1" })}>مدير</a></li>
+                <li><a onClick={() => setSearchParams({ search, role: "user", page: "1" })}>مستخدم</a></li>
               </ul>
             </div>
           </div>
@@ -229,18 +233,21 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((item) => (
+                {loading ? (
+                  <tr><td colSpan={5} className="text-center py-10"><span className="loading loading-spinner loading-lg text-primary"></span></td></tr>
+                ) : users.length > 0 ? (
+                  users.map((item) => (
                   <tr key={item.id}>
                     <td>
                       <div className="flex items-center gap-3">
-                        <div className="avatar">
+                        {/* <div className="avatar">
                           <div className="mask mask-squircle h-12 w-12">
                             <img
                               src="https://img.daisyui.com/images/profile/demo/2@94.webp"
                               alt="Avatar Tailwind CSS Component"
                             />
                           </div>
-                        </div>
+                        </div> */}
                         <div>
                           <div className="font-bold text-base text-[#0D1D2C]">
                             {item.full_name}
@@ -270,28 +277,45 @@ const AdminDashboard = () => {
                         </button>
                       </th>
                     ) : (
-                      ""
+                      <th></th>
                     )}
                   </tr>
-                ))}
+                  ))
+                ) : (
+                  <tr><td colSpan={5} className="text-center py-10 text-gray-500">لا يوجد مستخدمين</td></tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
+        {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <div className="flex justify-center mb-10">
             <div className="join gap-2">
-              <button className="join-item btn">«</button>
-
-              <button className={`join-item btn `}>1</button>
-
-              <button className="join-item btn">»</button>
+              <button
+                className="join-item btn"
+                disabled={page <= 1}
+                onClick={() => setSearchParams({ search, role, page: String(page - 1) })}
+              >«</button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  className={`join-item btn ${p === page ? "btn-active" : ""}`}
+                  onClick={() => setSearchParams({ search, role, page: String(p) })}
+                >{p}</button>
+              ))}
+              <button
+                className="join-item btn"
+                disabled={page >= totalPages}
+                onClick={() => setSearchParams({ search, role, page: String(page + 1) })}
+              >»</button>
             </div>
           </div>
           <p className="font-normal text-12px text-[#3E4946]">
             عرض 1-{users.length} من أصل {count} مستخدم
           </p>
         </div>
+        )}
       </div>
     </section>
   );

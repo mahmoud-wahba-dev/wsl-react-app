@@ -1,15 +1,16 @@
 import orgImg from "../assets/imgs/org.jpg";
 
 const OrgCard = ({ item }) => {
-  const { name, logoProp, funding_areas, locationProp } = item;
+  const { name, logo, funding_areas, location } = item;
 
-  const logo = logoProp ?? orgImg;
-  const location = locationProp || "السعودية";
+  const logoSrc = logo ?? orgImg;
+  const loc = location || "السعودية";
+  
   return (
     <div className="rounded-12px bg-white shadow-2xl p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="size-16 center bg-[#E4EFFF] rounded-8px">
-          <img src={orgImg} className="size-full" alt="org" />
+          <img src={logoSrc} className="size-full object-contain" alt="org" />
         </div>
 
         <div className="flex items-center gap-1 font-normal text-12px text-[#3E4946]">
@@ -26,7 +27,7 @@ const OrgCard = ({ item }) => {
             />
           </svg>
 
-          <span>{location}</span>
+          <span>{loc}</span>
         </div>
       </div>
 
