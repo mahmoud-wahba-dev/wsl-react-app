@@ -1,13 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import Cookies from "js-cookie";
 
 const AdminNavbar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    Cookies.remove("access_token");
+    logout();
     navigate("/login");
   };
 
