@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const AdminNavbar = () => {
@@ -9,6 +9,10 @@ const AdminNavbar = () => {
     logout();
     navigate("/login");
   };
+
+  const initials = user?.email
+    ? user.email.split("@")[0].slice(0, 2).toUpperCase()
+    : "AD";
 
   return (
     <nav className="navbar w-full bg-base-300">
@@ -29,11 +33,37 @@ const AdminNavbar = () => {
         </svg>
       </label>
       <div className="flex-1 px-4 font-medium">لوحة التحكم</div>
-      <div className="flex items-center gap-2">
-        <span className="text-sm">{user?.email}</span>
-        <button onClick={handleLogout} className="btn btn-ghost btn-sm">
-          تسجيل الخروج
-        </button>
+      <div className="flex-none">
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+            <div className="w-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
+              {initials}
+            </div>
+          </div>
+          <ul tabIndex="-1" className="dropdown-content menu bg-base-100 rounded-box z-50 w-56 p-3 shadow-lg">
+            <li className="p-2 border-b border-gray-100 mb-1 [&.active]:!bg-transparent [&>*]:!bg-transparent">
+              <Link to="/admin/profile" className="flex items-center gap-3 no-underline hover:opacity-80 transition-opacity">
+                <div className="avatar placeholder">
+                  <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
+                    {initials}
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-sm text-[#0D1D2C]">{user?.email}</span>
+                  <span className="font-normal text-xs text-[#3E4946]">مدير النظام</span>
+                </div>
+              </Link>
+            </li>
+            <li className="[&.active]:!bg-transparent">
+              <button
+                onClick={handleLogout}
+                className="btn btn-ghost btn-sm w-full justify-start font-normal text-14px text-error hover:bg-red-50"
+              >
+                تسجيل الخروج
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
   );

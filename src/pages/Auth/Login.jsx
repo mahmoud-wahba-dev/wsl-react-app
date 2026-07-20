@@ -93,14 +93,7 @@ const Login = () => {
                   البريد الإلكتروني
                 </label>
                 <label className="input w-full h-12">
-                  <Field
-                    name="email"
-                    type="text"
-                    className="grow"
-                    placeholder="example@wasl.sa"
-                  />
-
-                  <svg
+                        <svg
                     width="20"
                     height="16"
                     viewBox="0 0 20 16"
@@ -112,6 +105,14 @@ const Login = () => {
                       fill="#BDC9C5"
                     />
                   </svg>
+                  <Field
+                    name="email"
+                    type="text"
+                    className="grow"
+                    placeholder="example@wasl.sa"
+                  />
+
+            
                 </label>
                 <ErrorMsg name={"email"} />
               </div>

@@ -23,6 +23,7 @@ const AdminDashboard = () => {
   const [dashStats, setDashStats] = useState(null);
   const [userTable, setUserTable] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingId, setLoadingId] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
   const role = searchParams.get("role") || "";
@@ -73,6 +74,7 @@ const AdminDashboard = () => {
   const currentPage = userTable?.current_page || 1;
 
   const handleStatus = async (id, isVerified) => {
+    setLoadingId(id);
     const previous = userTable;
 
     setUserTable((prev) => ({
@@ -90,9 +92,11 @@ const AdminDashboard = () => {
       const res = await api(endpoint, { method: "POST" });
       Toast.success(res.message);
       getUsers();
+      setLoadingId(null);
     } catch (error) {
       console.log(error);
       setUserTable(previous);
+      setLoadingId(null);
       Toast.error(error?.message || "حدث خطأ");
     }
   };
@@ -322,10 +326,15 @@ const AdminDashboard = () => {
                             onClick={() =>
                               handleStatus(item.id, item.is_verified)
                             }
+                            disabled={loadingId === item.id}
                           >
-                            {item.is_verified ? " إلغاء التفعيل" : "تفعيل"}
+                            {loadingId === item.id ? (
                               <span className="loading loading-spinner"></span>
-
+                            ) : item.is_verified ? (
+                              " إلغاء التفعيل"
+                            ) : (
+                              "تفعيل"
+                            )}
                           </button>
                         </th>
                       ) : (

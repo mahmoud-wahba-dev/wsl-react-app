@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const links = [
   {
@@ -28,6 +29,18 @@ const links = [
 ];
 
 const AdminSidebar = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const initials = user?.email
+    ? user.email.split("@")[0].slice(0, 2).toUpperCase()
+    : "AD";
+
   return (
     <div className="drawer-side is-drawer-close:overflow-visible">
       <label
@@ -90,7 +103,7 @@ const AdminSidebar = () => {
           </ul>
           <div className="p-4 bg-[#EEF4FF] rounded-12px center gap-4">
             <div className="is-drawer-close:hidden">
-              <p className="font-bold text-14px text-[#0D1D2C]">أحمد المسؤول</p>
+              <p className="font-bold text-14px text-[#0D1D2C]">{user?.email}</p>
               <p className="font-normal text-12px text-[#3E4946]">
                 مدير النظام
               </p>
@@ -100,7 +113,7 @@ const AdminSidebar = () => {
               <div tabIndex={0} role="button" className="btn m-1 is-drawer-close:m-0 is-drawer-close:p-0" >
                 <div className="avatar avatar-placeholder">
                   <div className="bg-neutral text-neutral-content w-8 rounded-full">
-                    <span className="text-xs">AD</span>
+                    <span className="text-xs">{initials}</span>
                   </div>
                 </div>
               </div>
@@ -109,10 +122,10 @@ const AdminSidebar = () => {
                 className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
               >
                 <li>
-                  <a>Item 1</a>
+                  <Link to="/admin/profile">الملف الشخصي</Link>
                 </li>
                 <li>
-                  <a>Item 2</a>
+                  <button onClick={handleLogout}>تسجيل الخروج</button>
                 </li>
               </ul>
             </div>

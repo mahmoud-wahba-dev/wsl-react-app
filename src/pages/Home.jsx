@@ -74,13 +74,13 @@ const Home = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-10">
-              <div className="md:col-span-3 h-fit min-h-32 rounded-12px bg-[#006153] shadow-xl p-6">
+              <div className="md:col-span-6 h-fit min-h-32 rounded-12px bg-[#006153] shadow-xl p-6">
                 <div className="font-bold text-14px text-white/80">إجمالي الطلبات</div>
                 <p className="text-3xl font-bold my-1 text-white">{stats?.total_requests || 0}</p>
                 <div className="font-normal text-12px text-white/60">عدد طلبات المطابقة المقدمة</div>
               </div>
 
-              <div className="md:col-span-3 h-fit min-h-32 rounded-12px bg-[#FFD578] shadow-xl p-6">
+              <div className="md:col-span-6 h-fit min-h-32 rounded-12px bg-[#FFD578] shadow-xl p-6">
                 <div className="font-bold text-14px text-[#795A03]">إجمالي المبلغ المطلوب</div>
                 <p className="text-3xl font-bold my-1 text-[#795A03]">
                   {(stats?.total_requested_amount || 0).toLocaleString()}
@@ -88,17 +88,7 @@ const Home = () => {
                 <div className="font-normal text-12px text-[#795A03]">ريال سعودي</div>
               </div>
 
-              <div className="md:col-span-3 h-fit min-h-32 rounded-12px bg-[#EEF4FF] shadow-xl p-6">
-                <div className="font-bold text-14px text-[#0D1D2C]">المؤسسات المتاحة</div>
-                <p className="text-3xl font-bold my-1 text-primary">{stats?.total_donors_available || 0}</p>
-                <div className="font-normal text-12px text-[#3E4946]">مؤسسة مانحة متاحة</div>
-              </div>
 
-              <div className="md:col-span-3 h-fit min-h-32 rounded-12px bg-[#FFEEE8] shadow-xl p-6">
-                <div className="font-bold text-14px text-[#B33A1A]">تقبل الطلبات الآن</div>
-                <p className="text-3xl font-bold my-1 text-[#B33A1A]">{stats?.donors_accepting_now || 0}</p>
-                <div className="font-normal text-12px text-[#B33A1A]">تستقبل طلبات حالياً</div>
-              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
