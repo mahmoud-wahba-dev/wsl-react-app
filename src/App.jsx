@@ -21,6 +21,8 @@ import AdminRoute from "./guards/AdminRoute";
 import InReviewGuard from "./guards/InReviewGuard";
 import MatchResult from './pages/MatchResult';
 import OrgDetails from './pages/OrgDetails';
+import Requests from "./pages/Requests";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   // Guest routes (login, register, reset-password)
@@ -49,10 +51,13 @@ const router = createBrowserRouter([
         element: <MasterLayout />,
         children: [
           { index: true, element: <Home /> },
+          
+          { path: "requests", element: <Requests /> },
           { path: "match-result/:id", element: <MatchResult /> },
           { path: "organizations", element: <Organizations /> },
           { path: "organizations/:id", element: <OrgDetails /> },
           { path: "match-request", element: <MatchRequest /> },
+          { path: "profile", element: <Profile /> },
           
         ],
       },

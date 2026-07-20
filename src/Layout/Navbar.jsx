@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import useAuth from "../hooks/useAuth";
 
@@ -15,8 +15,9 @@ export default function Navbar() {
   const items = [
     ...(user?.role === "admin"
       ? [{ name: "لوحة الإدارة الطلبات", href: "/admin" }]
-      : []),
+      : [{ name: "الرئيسيه", href: "/" }]),
     { name: "المؤسسات", href: "/organizations" },
+    { name: "الطلبات", href: "/requests" },
     { name: "تقديم طلب جديد", href: "/match-request" },
   ];
 
@@ -39,25 +40,17 @@ export default function Navbar() {
                   <li key={idx}>
                     <NavLink
                       to={item.href}
-                      className="font-normal text-base text-[#3E4946]"
+                      className={({isActive})=>`font-normal text-base text-[#3E4946] px-3 py-2 rounded-lg transition-colors ${isActive ? "bg-primary text-white" : "hover:bg-gray-100"}`}
                     >
                       {item.name}
                     </NavLink>
                   </li>
                 ))}
-                <li>
-                  <button
-                    onClick={handleLogout}
-                    className="font-normal text-base text-[#3E4946]"
-                  >
-                    تسجيل الخروج
-                  </button>
-                </li>
               </ul>
             )}
             <button
               type="button"
-              className="btn btn-ghost btn-circle"
+              className="btn btn-ghost btn-circle text-[#3E4946] hover:bg-gray-200"
               onClick={toggleTheme}
               aria-label={
                 theme === "dark"
@@ -105,7 +98,46 @@ export default function Navbar() {
                 </svg>
               )}
             </button>
-            <div className="dropdown dropdown-end">
+            {isLoggedIn && (
+              <div className="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div className="w-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
+                    {(user?.email || "U").charAt(0).toUpperCase()}
+                  </div>
+                </div>
+                <ul
+                  tabIndex="-1"
+                  className="dropdown-content menu bg-base-100 rounded-box z-50 w-56 p-3 shadow-lg"
+                >
+                   <li className="p-2 border-b border-gray-100 mb-1 [&.active]:!bg-transparent [&>*]:!bg-transparent">
+                    <Link to="/profile" className="flex items-center gap-3 no-underline hover:opacity-80 transition-opacity">
+                      <div className="avatar placeholder">
+                        <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
+                          {(user?.email || "U").charAt(0).toUpperCase()}
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-medium text-sm text-[#0D1D2C]">{user?.email}</span>
+                        <span className="font-normal text-xs text-[#3E4946]">{user?.role === "admin" ? "مدير النظام" : "مستخدم"}</span>
+                      </div>
+                    </Link>
+                  </li>
+                  <li className="[&.active]:!bg-transparent">
+                    <button
+                      onClick={handleLogout}
+                      className="btn btn-ghost btn-sm w-full justify-start font-normal text-14px text-error hover:bg-red-50"
+                    >
+                      تسجيل الخروج
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+            <div className="dropdown dropdown-end md:hidden">
               <div
                 tabIndex={0}
                 role="button"

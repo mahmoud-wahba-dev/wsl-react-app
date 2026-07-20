@@ -324,6 +324,8 @@ const AdminDashboard = () => {
                             }
                           >
                             {item.is_verified ? " إلغاء التفعيل" : "تفعيل"}
+                              <span className="loading loading-spinner"></span>
+
                           </button>
                         </th>
                       ) : (

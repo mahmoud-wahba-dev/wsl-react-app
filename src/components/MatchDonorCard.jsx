@@ -104,14 +104,14 @@ const MatchDonorCard = ({ donor }) => {
             )}
           </div>
           <div className="divider"></div>
-          <div className="flex items-center gap-4">
+          {/* <div className="flex items-center gap-4">
             <Link to={"/match-request"} className="btn btn-primary rounded-13px h-11 font-medium text-14px">
               قدم الآن
             </Link>
             <Link to={"/match-request"} className="btn btn-outline border-[#6E7A76] rounded-13px h-11 font-medium text-14px text-[#3E4946]">
               عرض التفاصيل
             </Link>
-          </div>
+          </div> */}
         </div>
         <div>
           <div

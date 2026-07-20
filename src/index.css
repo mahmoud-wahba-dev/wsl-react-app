@@ -16,6 +16,8 @@
   --color-primary-content: #ffffff;
   --color-secondary: #3e4946;
   --color-secondary-content: #ffffff;
+  --menu-active-bg: #006153;
+
 }
 
 /* Figma dark: page/navbar #0f172a, text #3b82f6, brand #006153, secondary #64748b */
