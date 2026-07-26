@@ -8,18 +8,20 @@ const links = [
     label: "لوحة التحكم",
     icon: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
   },
+
+  {
+    to: "/admin/donors",
+    end: false,
+    label: "المؤسسات المانحة",
+    icon: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z",
+  },
   // {
   //   to: "/admin/requests",
   //   end: false,
   //   label: "الطلبات",
   //   icon: "M20 7h-9M14 17H5M17 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
   // },
-  // {
-  //   to: "/admin/donors",
-  //   end: false,
-  //   label: "المؤسسات المانحة",
-  //   icon: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z",
-  // },
+
   // {
   //   to: "/admin/users",
   //   end: false,
@@ -103,14 +105,20 @@ const AdminSidebar = () => {
           </ul>
           <div className="p-4 bg-[#EEF4FF] rounded-12px center gap-4">
             <div className="is-drawer-close:hidden">
-              <p className="font-bold text-14px text-[#0D1D2C]">{user?.email}</p>
+              <p className="font-bold text-14px text-[#0D1D2C]">
+                {user?.email}
+              </p>
               <p className="font-normal text-12px text-[#3E4946]">
                 مدير النظام
               </p>
             </div>
 
             <div className="dropdown dropdown-top">
-              <div tabIndex={0} role="button" className="btn m-1 is-drawer-close:m-0 is-drawer-close:p-0" >
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn m-1 is-drawer-close:m-0 is-drawer-close:p-0"
+              >
                 <div className="avatar avatar-placeholder">
                   <div className="bg-neutral text-neutral-content w-8 rounded-full">
                     <span className="text-xs">{initials}</span>

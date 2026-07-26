@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const TagInput = ({ name, value = [], setFieldValue, placeholder }) => {
-  const [inputVal, setInputVal] = useState("");
+  const [inputVal,  setInputVal] = useState("");
 
   const addTag = () => {
     const trimmed = inputVal.trim();
