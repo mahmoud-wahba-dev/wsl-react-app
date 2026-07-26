@@ -77,7 +77,7 @@ const Organizations = () => {
             />
           </label>
 
-          <div className="dropdown">
+          {/* <div className="dropdown">
             <div
               tabIndex={0}
               role="button"
@@ -123,7 +123,7 @@ const Organizations = () => {
                 </a>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 items-stretch">

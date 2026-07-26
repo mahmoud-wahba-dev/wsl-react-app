@@ -37,7 +37,7 @@ const OrgCard = ({ item }) => {
         {funding_areas.slice(0, 3).map((item, idx) => (
           <div
             key={idx}
-            className="badge badge-soft py-5 bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153]"
+            className="badge badge-soft py-7 bg-[#0061531A] rounded-99px px-4 font-normal text-12px text-[#006153]"
           >
             {item}
           </div>

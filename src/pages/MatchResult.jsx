@@ -45,7 +45,7 @@ const MatchResult = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 mb-6">
           <div className="lg:col-span-4">
-            <div className="border border-[#BDC9C5] shadow-xl p-6 rounded-12px">
+            {/* <div className="border border-[#BDC9C5] shadow-xl p-6 rounded-12px">
               <h4 className="font-medium text-20px text-[#0D1D2C] mb-4">
                 تصفية النتائج
               </h4>
@@ -72,9 +72,9 @@ const MatchResult = () => {
                   الدمام
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-12 space-y-6">
             {loading ? (
               <Loader />
             ) : results.length > 0 ? (
