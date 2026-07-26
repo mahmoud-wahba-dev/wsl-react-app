@@ -7,6 +7,7 @@ import Input from "../composable/Input";
 import Textarea from "../composable/Textarea";
 import InputWithIcon from "../composable/InputWithIcon";
 import ErrorMsg from "../composable/ErrorMsg";
+import TagInput from "../composable/TagInput";
 import Toast from "../../public/services/toast";
 
 const initialValues = {
@@ -166,13 +167,13 @@ const MatchRequest = () => {
                     <ErrorMsg name="projectName" />
                   </div>
                   <div className="md:col-span-2">
-                    <Label text="مجالات المشروع (اختر ما ينطبق)" />
-                    <div className="filter">
-                      <Field type="checkbox" name="projectFields" value="التعليم" className="btn" aria-label="التعليم" />
-                      <Field type="checkbox" name="projectFields" value="الإغاثة" className="btn" aria-label="الإغاثة" />
-                      <Field type="checkbox" name="projectFields" value="الصحة" className="btn" aria-label="الصحة" />
-                      <button type="button" className="btn btn-square" onClick={() => setFieldValue("projectFields", [])}>×</button>
-                    </div>
+                    <Label text="مجالات المشروع" />
+                    <TagInput
+                      name="projectFields"
+                      value={values.projectFields}
+                      setFieldValue={setFieldValue}
+                      placeholder="اكتب المجال ثم اضغط Enter"
+                    />
                     <ErrorMsg name="projectFields" />
                   </div>
                   <div className="md:col-span-2">
