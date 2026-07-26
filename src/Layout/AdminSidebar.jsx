@@ -44,13 +44,13 @@ const AdminSidebar = () => {
     : "AD";
 
   return (
-    <div className="drawer-side is-drawer-close:overflow-visible">
+    <div className="drawer-side overflow-visible">
       <label
         htmlFor="my-drawer-4"
         aria-label="close sidebar"
         className="drawer-overlay"
       ></label>
-      <div className="flex min-h-full flex-col items-start bg-white is-drawer-close:w-14 is-drawer-open:w-64 transition-all duration-300">
+      <div className="flex min-h-full flex-col items-start bg-white is-drawer-close:w-14 is-drawer-open:w-64 transition-all duration-300 overflow-visible">
         <div className=" flex flex-col items-center w-full mb-6">
           <div className="bg-primary is-drawer-close:!hidden is-drawer-close:size-10 is-drawer-open:size-16 center is-drawer-close:rounded-sm rounded-16px m-auto mt-10 mb-3 is-drawer-close:hidden">
             <svg
@@ -127,7 +127,7 @@ const AdminSidebar = () => {
               </div>
               <ul
                 tabIndex="-1"
-                className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                className="dropdown-content menu bg-base-100 rounded-box z-[999] w-52 p-2 shadow-sm"
               >
                 <li>
                   <Link to="/admin/profile">الملف الشخصي</Link>
