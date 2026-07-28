@@ -1,0 +1,103 @@
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import DonorForm from "../../../components/DonorForm";
+import { api } from "../../../utils/api";
+import Toast from "../../../../public/services/toast";
+import Loader from "../../../components/Loader";
+
+const EditDonor = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [donor, setDonor] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await api(`/api/grants/donors/${id}/`);
+        setDonor(res.data);
+      } catch {
+        Toast.error("فشل تحميل بيانات المانح");
+        navigate("/admin/donors");
+      }
+      setLoading(false);
+    };
+    load();
+  }, [id]);
+
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    try {
+      const res = await api(`/api/grants/donors/${id}/`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          name: values.name,
+          description: values.description,
+          website: values.website || undefined,
+          facebook_url: values.facebook_url || undefined,
+          twitter_url: values.twitter_url || undefined,
+          funding_areas: values.funding_areas,
+          funding_areas_note: values.funding_areas_note || undefined,
+          acceptance_requirements: values.acceptance_requirements,
+          acceptance_requirements_note:
+            values.acceptance_requirements_note || undefined,
+          submission_periods: values.submission_periods || undefined,
+        }),
+      });
+
+      if (res.status === 1) {
+        Toast.success("تم تحديث المانح بنجاح");
+        return res.data;
+      } else if (res.errors?.length) {
+        const fieldErrors = {};
+        res.errors.forEach((err) => {
+          fieldErrors[err.field] = err.message;
+        });
+        setErrors(fieldErrors);
+        Toast.error(res.message);
+      } else {
+        Toast.error(res.message);
+      }
+    } catch {
+      Toast.error("حدث خطأ أثناء التحديث");
+    }
+    setSubmitting(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="mt-16">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!donor) return null;
+
+  return (
+    <div>
+      <h1 className="text-32px font-bold text-[#0D1D2C] mb-1">تعديل المانح</h1>
+      <p className="font-normal text-base text-[#3E4946] mb-8">
+        {donor.name}
+      </p>
+      <DonorForm
+        initialValues={{
+          name: donor.name || "",
+          description: donor.description || "",
+          website: donor.website || "",
+          facebook_url: donor.facebook_url || "",
+          twitter_url: donor.twitter_url || "",
+          funding_areas: donor.funding_areas || [],
+          funding_areas_note: donor.funding_areas_note || "",
+          acceptance_requirements: donor.acceptance_requirements || [],
+          acceptance_requirements_note: donor.acceptance_requirements_note || "",
+          submission_periods: donor.submission_periods || "",
+        }}
+        onSubmit={handleSubmit}
+        onSuccess={() => navigate("/admin/donors")}
+        submitLabel="تحديث المانح"
+      />
+    </div>
+  );
+};
+
+export default EditDonor;

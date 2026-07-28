@@ -12,6 +12,8 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AdminProfile from "./pages/Admin/AdminProfile";
 import AdminRequests from "./pages/Admin/AdminRequests";
 import AdminDonors from "./pages/Admin/AdminDonors";
+import CreateDonor from "./pages/Admin/donors/CreateDonor";
+import EditDonor from "./pages/Admin/donors/EditDonor";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminLayout from "./Layout/AdminLayout";
 import useAuth from "./hooks/useAuth";
@@ -75,6 +77,8 @@ const router = createBrowserRouter([
           { path: "/admin", element: <AdminDashboard /> },
           { path: "/admin/requests", element: <AdminRequests /> },
           { path: "/admin/donors", element: <AdminDonors /> },
+          { path: "/admin/donors/create", element: <CreateDonor /> },
+          { path: "/admin/donors/:id/edit", element: <EditDonor /> },
           { path: "/admin/users", element: <AdminUsers /> },
           { path: "/admin/profile", element: <AdminProfile /> },
         ],
