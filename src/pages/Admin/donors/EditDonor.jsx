@@ -41,6 +41,9 @@ const EditDonor = () => {
           acceptance_requirements_note:
             values.acceptance_requirements_note || undefined,
           submission_periods: values.submission_periods || undefined,
+          is_active: donor.is_active,
+          locations: values.locations,
+          contacts: values.contacts,
         }),
       });
 
@@ -50,7 +53,13 @@ const EditDonor = () => {
       } else if (res.errors?.length) {
         const fieldErrors = {};
         res.errors.forEach((err) => {
-          fieldErrors[err.field] = err.message;
+          const msg = err.message
+            .replace(/\{|\}/g, "")
+            .replace(/\[ErrorDetail\(string=['"]([^'"]+)['"].*\)\]/g, "$1")
+            .trim();
+          fieldErrors[err.field] = fieldErrors[err.field]
+            ? `${fieldErrors[err.field]}\n${msg}`
+            : msg;
         });
         setErrors(fieldErrors);
         Toast.error(res.message);
@@ -91,6 +100,8 @@ const EditDonor = () => {
           acceptance_requirements: donor.acceptance_requirements || [],
           acceptance_requirements_note: donor.acceptance_requirements_note || "",
           submission_periods: donor.submission_periods || "",
+          locations: donor.locations || [],
+          contacts: donor.contacts || [],
         }}
         onSubmit={handleSubmit}
         onSuccess={() => navigate("/admin/donors")}
