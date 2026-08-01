@@ -5,6 +5,12 @@ import { api } from "../../../utils/api";
 import Toast from "../../../../public/services/toast";
 import Loader from "../../../components/Loader";
 
+const formatApiError = (message) =>
+  message
+    .replace(/\{|\}/g, "")
+    .replace(/\[ErrorDetail\(string=['"]([^'"]+)['"].*\)\]/g, "$1")
+    .trim();
+
 const EditDonor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,26 +54,24 @@ const EditDonor = () => {
       });
 
       if (res.status === 1) {
-        Toast.success("تم تحديث المانح بنجاح");
         return res.data;
-      } else if (res.errors?.length) {
+      } else {
+        Toast.error(res.message || "حدث خطأ");
+      }
+    } catch (error) {
+      const errData = error?.response || error;
+      const message = errData?.message || "حدث خطأ أثناء التحديث";
+      if (errData?.errors?.length) {
         const fieldErrors = {};
-        res.errors.forEach((err) => {
-          const msg = err.message
-            .replace(/\{|\}/g, "")
-            .replace(/\[ErrorDetail\(string=['"]([^'"]+)['"].*\)\]/g, "$1")
-            .trim();
+        errData.errors.forEach((err) => {
+          const msg = formatApiError(err.message);
           fieldErrors[err.field] = fieldErrors[err.field]
             ? `${fieldErrors[err.field]}\n${msg}`
             : msg;
         });
         setErrors(fieldErrors);
-        Toast.error(res.message);
-      } else {
-        Toast.error(res.message);
       }
-    } catch {
-      Toast.error("حدث خطأ أثناء التحديث");
+      Toast.error(message);
     }
     setSubmitting(false);
   };
@@ -104,8 +108,12 @@ const EditDonor = () => {
           contacts: donor.contacts || [],
         }}
         onSubmit={handleSubmit}
-        onSuccess={() => navigate("/admin/donors")}
+        onSuccess={() => {
+          Toast.success("تم تحديث المانح بنجاح");
+          navigate("/admin/donors");
+        }}
         submitLabel="تحديث المانح"
+        logoUrl={donor.logo}
       />
     </div>
   );

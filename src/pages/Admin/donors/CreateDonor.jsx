@@ -18,6 +18,12 @@ const donorInitialValues = {
   contacts: [],
 };
 
+const formatApiError = (message) =>
+  message
+    .replace(/\{|\}/g, "")
+    .replace(/\[ErrorDetail\(string=['"]([^'"]+)['"].*\)\]/g, "$1")
+    .trim();
+
 const CreateDonor = () => {
   const navigate = useNavigate();
 
@@ -44,26 +50,24 @@ const CreateDonor = () => {
       });
 
       if (res.status === 1) {
-        Toast.success("تم إضافة المانح بنجاح");
         return res.data;
-      } else if (res.errors?.length) {
+      } else {
+        Toast.error(res.message || "حدث خطأ");
+      }
+    } catch (error) {
+      const errData = error?.response || error;
+      const message = errData?.message || "حدث خطأ أثناء الإضافة";
+      if (errData?.errors?.length) {
         const fieldErrors = {};
-        res.errors.forEach((err) => {
-          const msg = err.message
-            .replace(/\{|\}/g, "")
-            .replace(/\[ErrorDetail\(string=['"]([^'"]+)['"].*\)\]/g, "$1")
-            .trim();
+        errData.errors.forEach((err) => {
+          const msg = formatApiError(err.message);
           fieldErrors[err.field] = fieldErrors[err.field]
             ? `${fieldErrors[err.field]}\n${msg}`
             : msg;
         });
         setErrors(fieldErrors);
-        Toast.error(res.message);
-      } else {
-        Toast.error(res.message);
       }
-    } catch {
-      Toast.error("حدث خطأ أثناء الإضافة");
+      Toast.error(message);
     }
     setSubmitting(false);
   };
@@ -77,7 +81,10 @@ const CreateDonor = () => {
       <DonorForm
         initialValues={donorInitialValues}
         onSubmit={handleSubmit}
-        onSuccess={() => navigate("/admin/donors")}
+        onSuccess={() => {
+          Toast.success("تم إضافة المانح بنجاح");
+          navigate("/admin/donors");
+        }}
         submitLabel="إضافة المانح"
       />
     </div>

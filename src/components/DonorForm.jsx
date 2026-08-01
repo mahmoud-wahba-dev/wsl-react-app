@@ -46,10 +46,11 @@ export const donorInitialValues = {
   contacts: [],
 };
 
-const DonorForm = ({ initialValues, onSubmit, onSuccess, submitLabel }) => {
+const DonorForm = ({ initialValues, onSubmit, onSuccess, submitLabel, logoUrl }) => {
   const [logoFile, setLogoFile] = useState(null);
   const [logoPreview, setLogoPreview] = useState(null);
   const [logoInputKey, setLogoInputKey] = useState(0);
+  const [logoError, setLogoError] = useState("");
 
   const [locationCity, setLocationCity] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
@@ -63,13 +64,24 @@ const DonorForm = ({ initialValues, onSubmit, onSuccess, submitLabel }) => {
         const token = Cookies.get("access_token");
         const formData = new FormData();
         formData.append("logo", logoFile);
-        await fetch(`${baseURL}/api/grants/donors/${donor.id}/`, {
+        const res = await fetch(`${baseURL}/api/grants/donors/${donor.id}/`, {
           method: "PATCH",
           headers: { Authorization: `Bearer ${token}` },
           body: formData,
         });
+        const data = await res.json();
+        if (res.ok && data.status === 1) {
+          setLogoError("");
+        } else {
+          const apiError = data?.errors?.[0]?.message || data?.message || "فشل رفع الشعار";
+          setLogoError(apiError);
+          Toast.error(apiError);
+          return;
+        }
       } catch {
-        Toast.error("تم الإضافة لكن فشل رفع الشعار");
+        setLogoError("فشل رفع الشعار، حاول مرة أخرى");
+        Toast.error("فشل رفع الشعار، حاول مرة أخرى");
+        return;
       }
     }
     if (donor && onSuccess) {
@@ -292,23 +304,31 @@ const DonorForm = ({ initialValues, onSubmit, onSuccess, submitLabel }) => {
                 <div className="md:col-span-2">
                   <Label text="شعار المؤسسة" />
                   <div className="flex items-center gap-4">
-                    {logoPreview && (
-                      <img src={logoPreview} className="size-20 object-contain rounded-8px border" alt="logo preview" />
+                    {(logoPreview || logoUrl) && (
+                      <img
+                        src={logoPreview || logoUrl}
+                        className="size-20 object-contain rounded-8px border"
+                        alt="logo preview"
+                      />
                     )}
                     <input
                       key={logoInputKey}
                       type="file"
                       accept="image/*"
                       onChange={(e) => {
+                        setLogoError("");
                         const file = e.target.files?.[0];
                         if (file) {
                           setLogoFile(file);
                           setLogoPreview(URL.createObjectURL(file));
                         }
                       }}
-                      className="file-input file-input-ghost w-full"
+                      className={`file-input file-input-ghost w-full ${logoError ? "file-input-error" : ""}`}
                     />
                   </div>
+                  {logoError && (
+                    <div className="text-error text-12px mt-2">{logoError}</div>
+                  )}
                 </div>
               </div>
             </div>
