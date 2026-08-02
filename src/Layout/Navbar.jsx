@@ -1,7 +1,7 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useTheme } from "../hooks/useTheme";
 import useAuth from "../hooks/useAuth";
-
+import logo from "/logo.png"
 export default function Navbar() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
@@ -30,7 +30,9 @@ export default function Navbar() {
               to={"/"}
               className="btn btn-link text-xl no-underline px-0 hover:bg-transparent hover:!shadow-none"
             >
-              <span className="text-primary"> وصل</span>
+              <span className="text-primary"> 
+                <img className="max-w-full max-h-full h-16" height={"65"} src={logo} alt="" />
+              </span>
             </NavLink>
           </div>
           <div className="flex-none gap-2">
