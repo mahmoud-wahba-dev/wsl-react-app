@@ -132,7 +132,7 @@ const Organizations = () => {
               <Loader />
             </div>
           ) : donorOrgs.length > 0 ? (
-            donorOrgs.map((item) => <OrgCard key={item.id} item={item} />)
+            donorOrgs.slice(0,6).map((item) => <OrgCard key={item.id} item={item} />)
           ) : (
             <h4 className="col-span-full text-center">لا يوجد مؤسسات مانحه</h4>
           )}

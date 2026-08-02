@@ -57,12 +57,12 @@ const GrantRequestCard = ({ req }) => {
           >
             عرض النتائج
           </button>
-          <button
+          {/* <button
             onClick={handleMatch}
             className="btn btn-primary rounded-13px h-11 font-medium text-14px"
           >
             تعديل
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
