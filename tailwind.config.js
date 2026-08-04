@@ -9,7 +9,7 @@ function buildPxScale(start, end, step = 1, unit = "rem", factor = 16) {
   return scale;
 }
 
-const fontSizeScale = buildPxScale(10, 100);
+const fontSizeScale = buildPxScale(5, 100);
 const radiusScale = buildPxScale(4, 100);
 
 /** @type {import('tailwindcss').Config} */

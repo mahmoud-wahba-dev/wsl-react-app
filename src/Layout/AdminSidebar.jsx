@@ -15,19 +15,19 @@ const links = [
     label: "المؤسسات",
     icon: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z",
   },
-  // {
-  //   to: "/admin/requests",
-  //   end: false,
-  //   label: "الطلبات",
-  //   icon: "M20 7h-9M14 17H5M17 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
-  // },
+  {
+    to: "/admin/requests",
+    end: false,
+    label: "الطلبات",
+    icon: "M20 7h-9M14 17H5M17 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z",
+  },
 
-  // {
-  //   to: "/admin/users",
-  //   end: false,
-  //   label: "المستخدمين",
-  //   icon: "M12 4.354a4 4 0 1 1 0 5.292M15 21H3v-1a6 6 0 0 1 12 0v1Zm0 0h6v-1a6 6 0 0 0-9-5.197M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
-  // },
+  {
+    to: "/admin/users",
+    end: false,
+    label: "المستخدمين",
+    icon: "M12 4.354a4 4 0 1 1 0 5.292M15 21H3v-1a6 6 0 0 1 12 0v1Zm0 0h6v-1a6 6 0 0 0-9-5.197M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
+  },
 ];
 
 const AdminSidebar = () => {
