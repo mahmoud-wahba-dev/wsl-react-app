@@ -9,12 +9,24 @@ const AdminRequests = () => {
   const search = searchParams.get("search") || "";
   const page = Number(searchParams.get("page")) || 1;
 
+  const PAGE_SIZE = 7;
+
+  const setPage = (p) => {
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    params.set("page", String(p));
+    params.set("page_size", String(PAGE_SIZE));
+    setSearchParams(params);
+  };
+
   const getRequests = async () => {
     setLoading(true);
     try {
-      const query = searchParams.toString()
-        ? `?${searchParams.toString()}`
-        : "";
+      const params = new URLSearchParams();
+      if (search) params.set("search", search);
+      params.set("page", String(page));
+      params.set("page_size", String(PAGE_SIZE));
+      const query = params.toString() ? `?${params.toString()}` : "";
       const res = await api(`/api/grants/requests/${query}`);
       setTable(res.data);
     } catch {
@@ -70,7 +82,13 @@ const AdminRequests = () => {
                   placeholder="بحث باسم الجمعية أو عنوان المشروع..."
                   value={search}
                   onChange={(e) =>
-                    setSearchParams({ search: e.target.value, page: "1" })
+                    setSearchParams(
+                      Object.fromEntries(
+                        Object.entries({ search: e.target.value, page: "1" }).filter(
+                          ([, v]) => v !== ""
+                        )
+                      )
+                    )
                   }
                 />
               </label>
@@ -205,16 +223,14 @@ const AdminRequests = () => {
             </table>
           </div>
         </div>
-        {totalPages > 1 && (
+        {count > 0 && (
           <div className="flex items-center justify-between">
             <div className="flex justify-center mb-10">
               <div className="join gap-2">
                 <button
                   className="join-item btn"
                   disabled={page <= 1}
-                  onClick={() =>
-                    setSearchParams({ search, page: String(page - 1) })
-                  }
+                  onClick={() => setPage(page - 1)}
                 >
                   «
                 </button>
@@ -223,9 +239,7 @@ const AdminRequests = () => {
                     <button
                       key={p}
                       className={`join-item btn ${p === page ? "btn-active" : ""}`}
-                      onClick={() =>
-                        setSearchParams({ search, page: String(p) })
-                      }
+                      onClick={() => setPage(p)}
                     >
                       {p}
                     </button>
@@ -234,17 +248,15 @@ const AdminRequests = () => {
                 <button
                   className="join-item btn"
                   disabled={page >= totalPages}
-                  onClick={() =>
-                    setSearchParams({ search, page: String(page + 1) })
-                  }
+                  onClick={() => setPage(page + 1)}
                 >
                   »
                 </button>
               </div>
             </div>
             <p className="font-normal text-12px text-[#3E4946]">
-              عرض {requests.length > 0 ? (currentPage - 1) * (table?.page_size || 20) + 1 : 0}-
-              {(currentPage - 1) * (table?.page_size || 20) + requests.length} من أصل {count} طلب
+              عرض {requests.length > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0}-
+              {(currentPage - 1) * PAGE_SIZE + requests.length} من أصل {count} طلب
             </p>
           </div>
         )}

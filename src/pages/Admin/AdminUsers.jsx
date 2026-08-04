@@ -12,12 +12,27 @@ const AdminUsers = () => {
   const role = searchParams.get("role") || "";
   const page = Number(searchParams.get("page")) || 1;
 
+  const PAGE_SIZE = 7;
+
+  const setPage = (p, newRole) => {
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    if (newRole) params.set("role", newRole);
+    else if (role) params.set("role", role);
+    params.set("page", String(p));
+    params.set("page_size", String(PAGE_SIZE));
+    setSearchParams(params);
+  };
+
   const getUsers = async () => {
     setLoading(true);
     try {
-      const query = searchParams.toString()
-        ? `?${searchParams.toString()}`
-        : "";
+      const params = new URLSearchParams();
+      if (search) params.set("search", search);
+      if (role) params.set("role", role);
+      params.set("page", String(page));
+      params.set("page_size", String(PAGE_SIZE));
+      const query = params.toString() ? `?${params.toString()}` : "";
       const res = await api(`/api/admin/users/${query}`);
       setUserTable(res.data);
     } catch {
@@ -34,6 +49,10 @@ const AdminUsers = () => {
   const users = userTable?.results || [];
   const count = userTable?.count || 0;
   const totalPages = userTable?.total_pages || 1;
+  const currentPage = userTable?.current_page || page;
+  const pageSize = userTable?.page_size || PAGE_SIZE;
+  const start = count ? (currentPage - 1) * pageSize + 1 : 0;
+  const end = (currentPage - 1) * pageSize + users.length;
 
   const handleStatus = async (id, isVerified) => {
     setLoadingId(id);
@@ -100,7 +119,13 @@ const AdminUsers = () => {
                   placeholder="بحث باسم المستخدم أو البريد..."
                   value={search}
                   onChange={(e) =>
-                    setSearchParams({ search: e.target.value, role, page: "1" })
+                    setSearchParams(
+                      Object.fromEntries(
+                        Object.entries({ search: e.target.value, role, page: "1" }).filter(
+                          ([, v]) => v !== ""
+                        )
+                      )
+                    )
                   }
                 />
               </label>
@@ -130,27 +155,13 @@ const AdminUsers = () => {
                 className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
               >
                 <li>
-                  <a onClick={() => setSearchParams({ search, page: "1" })}>
-                    الكل
-                  </a>
+                  <a onClick={() => setPage(1)}>الكل</a>
                 </li>
                 <li>
-                  <a
-                    onClick={() =>
-                      setSearchParams({ search, role: "admin", page: "1" })
-                    }
-                  >
-                    مدير
-                  </a>
+                  <a onClick={() => setPage(1, "admin")}>مدير</a>
                 </li>
                 <li>
-                  <a
-                    onClick={() =>
-                      setSearchParams({ search, role: "user", page: "1" })
-                    }
-                  >
-                    مستخدم
-                  </a>
+                  <a onClick={() => setPage(1, "user")}>مستخدم</a>
                 </li>
               </ul>
             </div>
@@ -244,16 +255,14 @@ const AdminUsers = () => {
             </table>
           </div>
         </div>
-        {totalPages > 1 && (
+        {count > 0 && (
           <div className="flex items-center justify-between">
             <div className="flex justify-center mb-10">
               <div className="join gap-2">
                 <button
                   className="join-item btn"
                   disabled={page <= 1}
-                  onClick={() =>
-                    setSearchParams({ search, role, page: String(page - 1) })
-                  }
+                  onClick={() => setPage(page - 1)}
                 >
                   «
                 </button>
@@ -262,9 +271,7 @@ const AdminUsers = () => {
                     <button
                       key={p}
                       className={`join-item btn ${p === page ? "btn-active" : ""}`}
-                      onClick={() =>
-                        setSearchParams({ search, role, page: String(p) })
-                      }
+                      onClick={() => setPage(p)}
                     >
                       {p}
                     </button>
@@ -273,16 +280,14 @@ const AdminUsers = () => {
                 <button
                   className="join-item btn"
                   disabled={page >= totalPages}
-                  onClick={() =>
-                    setSearchParams({ search, role, page: String(page + 1) })
-                  }
+                  onClick={() => setPage(page + 1)}
                 >
                   »
                 </button>
               </div>
             </div>
             <p className="font-normal text-12px text-[#3E4946]">
-              عرض 1-{users.length} من أصل {count} مستخدم
+              عرض {start}-{end} من أصل {count} مستخدم
             </p>
           </div>
         )}

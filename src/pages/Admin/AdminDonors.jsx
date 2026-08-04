@@ -1,28 +1,51 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../../utils/api";
 import Toast from "../../../public/services/toast";
 import ConfirmModal from "../../components/ConfirmModal";
 
+const PAGE_SIZE = 7;
+
 const AdminDonors = () => {
-  const [donors, setDonors] = useState([]);
+  const [table, setTable] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const search = searchParams.get("search") || "";
+  const page = Number(searchParams.get("page")) || 1;
+
+  const setPage = (p) => {
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    params.set("page", String(p));
+    params.set("page_size", String(PAGE_SIZE));
+    setSearchParams(params);
+  };
 
   const getDonors = async () => {
     setLoading(true);
     try {
-      const query = searchQuery ? `?search=${searchQuery}` : "";
+      const params = new URLSearchParams();
+      if (search) params.set("search", search);
+      params.set("page", String(page));
+      params.set("page_size", String(PAGE_SIZE));
+      const query = params.toString() ? `?${params.toString()}` : "";
       const res = await api(`/api/grants/donors/${query}`);
-      setDonors(res.data?.results || res.data || []);
+      setTable(res.data);
     } catch {
-      setDonors([]);
+      setTable(null);
     }
     setLoading(false);
   };
+
+  const donors = table?.results || [];
+  const count = table?.count || 0;
+  const totalPages = table?.total_pages || 1;
+  const currentPage = table?.current_page || page;
+  const start = count ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+  const end = (currentPage - 1) * PAGE_SIZE + donors.length;
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
@@ -39,13 +62,9 @@ const AdminDonors = () => {
   };
 
   useEffect(() => {
-    getDonors();
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => getDonors(), searchQuery ? 500 : 0);
+    const timer = setTimeout(() => getDonors(), search ? 500 : 0);
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [search, page]);
 
   return (
     <div>
@@ -56,7 +75,7 @@ const AdminDonors = () => {
         </Link>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="mb-10">
         <div className="flex items-center justify-between bg-[#EEF4FF] p-6 rounded-tr-25px rounded-tl-25px">
           <div className="w-[40%]">
             <label className="input">
@@ -69,106 +88,153 @@ const AdminDonors = () => {
               <input
                 type="search"
                 placeholder="بحث باسم المؤسسة..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={search}
+                onChange={(e) =>
+                  setSearchParams(
+                    Object.fromEntries(
+                      Object.entries({ search: e.target.value, page: "1" }).filter(
+                        ([, v]) => v !== ""
+                      )
+                    )
+                  )
+                }
               />
             </label>
           </div>
         </div>
-        <table className="table">
-          <thead className="bg-[#DAEAFF]">
-            <tr>
-              <th className="font-medium text-14px text-[#3E4946] py-6">الشعار</th>
-              <th className="font-medium text-14px text-[#3E4946] py-6">الاسم</th>
-              <th className="font-medium text-14px text-[#3E4946] py-6">مجالات التمويل</th>
-              <th className="font-medium text-14px text-[#3E4946] py-6">الموقع</th>
-              <th className="font-medium text-14px text-[#3E4946] py-6">الحالة</th>
-              <th className="font-medium text-14px text-[#3E4946] py-6">الإجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead className="bg-[#DAEAFF]">
               <tr>
-                <td colSpan={6} className="text-center py-10">
-                  <span className="loading loading-spinner loading-lg text-primary"></span>
-                </td>
+                <th className="font-medium text-14px text-[#3E4946] py-6">الشعار</th>
+                <th className="font-medium text-14px text-[#3E4946] py-6">الاسم</th>
+                <th className="font-medium text-14px text-[#3E4946] py-6">مجالات التمويل</th>
+                <th className="font-medium text-14px text-[#3E4946] py-6">الموقع</th>
+                <th className="font-medium text-14px text-[#3E4946] py-6">الحالة</th>
+                <th className="font-medium text-14px text-[#3E4946] py-6">الإجراءات</th>
               </tr>
-            ) : donors.length > 0 ? (
-              donors.map((donor) => (
-                <tr key={donor.id}>
-                  <td>
-                    <div className="avatar">
-                      {donor.logo ? (
-                        <div className="mask mask-squircle h-12 w-12">
-                          <img src={donor.logo} alt={donor.name} />
-                        </div>
-                      ) : (
-                        <div className="mask mask-squircle h-12 w-12 bg-[#0061531A] flex items-center justify-center">
-                          <span className="font-bold text-sm text-primary">{donor.name?.charAt(0)}</span>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="font-bold text-base text-[#0D1D2C]">{donor.name}</div>
-                  </td>
-                  <td>
-                    <div className="flex flex-wrap gap-1">
-                      {donor.funding_areas?.slice(0, 3).map((area, i) => (
-                        <span key={i} className="badge badge-soft bg-[#0061531A] text-[#006153] text-11px">
-                          {area}
-                        </span>
-                      ))}
-                      {donor.funding_areas?.length > 3 && (
-                        <span className="text-11px text-[#3E4946]">+{donor.funding_areas.length - 3}</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="font-normal text-base text-[#3E4946]">
-                    {donor.website ? (
-                      <a href={donor.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                        رابط
-                      </a>
-                    ) : "—"}
-                  </td>
-                  <td>
-                    <div className={`font-normal text-12px ${donor.is_active ? "text-primary" : "text-error"}`}>
-                      {donor.is_active ? "نشط" : "غير نشط"}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => navigate(`/admin/donors/${donor.id}/edit`)}
-                        className="btn btn-outline btn-primary btn-sm font-normal text-12px"
-                      >
-                        تعديل
-                      </button>
-                      <button
-                        onClick={() => setDeleteTarget(donor)}
-                        disabled={deletingId === donor.id}
-                        className="btn btn-outline btn-error btn-sm font-normal text-12px"
-                      >
-                        {deletingId === donor.id ? (
-                          <span className="loading loading-spinner loading-xs"></span>
-                        ) : (
-                          "حذف"
-                        )}
-                      </button>
-                    </div>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-10">
+                    <span className="loading loading-spinner loading-lg text-primary"></span>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="text-center py-10 text-gray-500">
-                  لا يوجد مؤسسات مانحة
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              ) : donors.length > 0 ? (
+                donors.map((donor) => (
+                  <tr key={donor.id}>
+                    <td>
+                      <div className="avatar">
+                        {donor.logo ? (
+                          <div className="mask mask-squircle h-12 w-12">
+                            <img src={donor.logo} alt={donor.name} />
+                          </div>
+                        ) : (
+                          <div className="mask mask-squircle h-12 w-12 bg-[#0061531A] flex items-center justify-center">
+                            <span className="font-bold text-sm text-primary">{donor.name?.charAt(0)}</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="font-bold text-base text-[#0D1D2C]">{donor.name}</div>
+                    </td>
+                    <td>
+                      <div className="flex flex-wrap gap-1">
+                        {donor.funding_areas?.slice(0, 3).map((area, i) => (
+                          <span key={i} className="badge badge-soft bg-[#0061531A] text-[#006153] text-11px">
+                            {area}
+                          </span>
+                        ))}
+                        {donor.funding_areas?.length > 3 && (
+                          <span className="text-11px text-[#3E4946]">+{donor.funding_areas.length - 3}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="font-normal text-base text-[#3E4946]">
+                      {donor.website ? (
+                        <a href={donor.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          رابط
+                        </a>
+                      ) : "—"}
+                    </td>
+                    <td>
+                      <div className={`font-normal text-12px ${donor.is_active ? "text-primary" : "text-error"}`}>
+                        {donor.is_active ? "نشط" : "غير نشط"}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => navigate(`/admin/donors/${donor.id}/edit`)}
+                          className="btn btn-outline btn-primary btn-sm font-normal text-12px"
+                        >
+                          تعديل
+                        </button>
+                        <button
+                          onClick={() => setDeleteTarget(donor)}
+                          disabled={deletingId === donor.id}
+                          className="btn btn-outline btn-error btn-sm font-normal text-12px"
+                        >
+                          {deletingId === donor.id ? (
+                            <span className="loading loading-spinner loading-xs"></span>
+                          ) : (
+                            "حذف"
+                          )}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center py-10 text-gray-500">
+                    لا يوجد مؤسسات مانحة
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {count > 0 && (
+        <div className="flex items-center justify-between">
+          <div className="flex justify-center mb-10">
+            <div className="join gap-2">
+              <button
+                className="join-item btn"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                «
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (p) => (
+                  <button
+                    key={p}
+                    className={`join-item btn ${p === page ? "btn-active" : ""}`}
+                    onClick={() => setPage(p)}
+                  >
+                    {p}
+                  </button>
+                ),
+              )}
+              <button
+                className="join-item btn"
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                »
+              </button>
+            </div>
+          </div>
+          <p className="font-normal text-12px text-[#3E4946]">
+            عرض {start}-{end} من أصل {count} مؤسسة
+          </p>
+        </div>
+      )}
 
       <ConfirmModal
         open={!!deleteTarget}
