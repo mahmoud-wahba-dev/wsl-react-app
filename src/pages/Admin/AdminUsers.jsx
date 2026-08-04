@@ -256,35 +256,33 @@ const AdminUsers = () => {
           </div>
         </div>
         {count > 0 && (
-          <div className="flex items-center justify-between">
-            <div className="flex justify-center mb-10">
-              <div className="join gap-2">
-                <button
-                  className="join-item btn"
-                  disabled={page <= 1}
-                  onClick={() => setPage(page - 1)}
-                >
-                  «
-                </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                  (p) => (
-                    <button
-                      key={p}
-                      className={`join-item btn ${p === page ? "btn-active" : ""}`}
-                      onClick={() => setPage(p)}
-                    >
-                      {p}
-                    </button>
-                  ),
-                )}
-                <button
-                  className="join-item btn"
-                  disabled={page >= totalPages}
-                  onClick={() => setPage(page + 1)}
-                >
-                  »
-                </button>
-              </div>
+          <div className="flex flex-col items-center gap-2 mb-10">
+            <div className="join gap-2">
+              <button
+                className="join-item btn"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                «
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (p) => (
+                  <button
+                    key={p}
+                    className={`join-item btn ${p === page ? "btn-active" : ""}`}
+                    onClick={() => setPage(p)}
+                  >
+                    {p}
+                  </button>
+                ),
+              )}
+              <button
+                className="join-item btn"
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                »
+              </button>
             </div>
             <p className="font-normal text-12px text-[#3E4946]">
               عرض {start}-{end} من أصل {count} مستخدم
