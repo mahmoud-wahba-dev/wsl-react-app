@@ -1,21 +1,53 @@
 import { useSearchParams } from "react-router-dom";
 import OrgCard from "../components/OrgCard";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { api } from "../utils/api";
+
+const PAGE_SIZE = 10;
 
 const Organizations = () => {
   const [donorOrgs, setDonorOrgs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({ current_page: 1, total_pages: 1 });
+  const [pagination, setPagination] = useState({
+    count: 0,
+    current_page: 1,
+    total_pages: 1,
+    page_size: PAGE_SIZE,
+  });
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = searchParams.get("search") || "";
   const funding_area = searchParams.get("funding_area") || "";
   const page = Number(searchParams.get("page")) || 1;
+  const pageSize = Number(searchParams.get("page_size")) || PAGE_SIZE;
+
+  const getParams = useCallback((overrides = {}) => {
+    const params = new URLSearchParams();
+    const values = {
+      search,
+      funding_area,
+      page: String(page),
+      page_size: String(pageSize),
+      ...overrides,
+    };
+
+    Object.entries(values).forEach(([key, value]) => {
+      if (value !== "" && value !== null && value !== undefined) {
+        params.set(key, String(value));
+      }
+    });
+
+    return params;
+  }, [search, funding_area, page, pageSize]);
+
+  const setPage = (nextPage) => {
+    setSearchParams(getParams({ page: String(nextPage) }));
+  };
 
   useEffect(() => {
-    const query = searchParams.toString() ? `?${searchParams.toString()}` : "";
+    const params = getParams();
+    const query = params.toString() ? `?${params.toString()}` : "";
 
     const timer = setTimeout(async () => {
       setLoading(true);
@@ -23,16 +55,28 @@ const Organizations = () => {
         const data = await api(`/api/grants/donors/${query}`);
         setDonorOrgs(data?.data?.results || []);
         setPagination({
+          count: data?.data?.count || 0,
           current_page: data?.data?.current_page || 1,
           total_pages: data?.data?.total_pages || 1,
+          page_size: data?.data?.page_size || pageSize,
         });
       } catch (err) {
         console.error(err);
+        setDonorOrgs([]);
+        setPagination({ count: 0, current_page: 1, total_pages: 1, page_size: pageSize });
       }
       setLoading(false);
     }, search ? 500 : 0);
     return () => clearTimeout(timer);
-  }, [search, funding_area, page]);
+  }, [getParams, search, pageSize]);
+
+  const count = pagination.count || 0;
+  const currentPage = pagination.current_page || page;
+  const totalPages = pagination.total_pages || 1;
+  const effectivePageSize = pagination.page_size || pageSize;
+  const start = count ? (currentPage - 1) * effectivePageSize + 1 : 0;
+  const end = (currentPage - 1) * effectivePageSize + donorOrgs.length;
+
   return (
     <section>
       <div className="container">
@@ -72,7 +116,12 @@ const Organizations = () => {
               placeholder="البحث عن اسم المؤسسة..."
               value={search}
               onChange={(e) =>
-                setSearchParams({ search: e.target.value, funding_area, page: "1" })
+                setSearchParams(
+                  getParams({
+                    search: e.target.value,
+                    page: "1",
+                  }),
+                )
               }
             />
           </label>
@@ -132,35 +181,38 @@ const Organizations = () => {
               <Loader />
             </div>
           ) : donorOrgs.length > 0 ? (
-            donorOrgs.slice(0,6).map((item) => <OrgCard key={item.id} item={item} />)
+            donorOrgs.map((item) => <OrgCard key={item.id} item={item} />)
           ) : (
             <h4 className="col-span-full text-center">لا يوجد مؤسسات مانحه</h4>
           )}
         </div>
 
-        {pagination.total_pages > 1 && (
-          <div className="flex justify-center mb-10">
+        {count > 0 && (
+          <div className="flex flex-col items-center gap-2 mb-10">
             <div className="join gap-2">
               <button
                 className="join-item btn"
-                disabled={page <= 1}
-                onClick={() => setSearchParams({ search, funding_area, page: String(page - 1) })}
+                disabled={currentPage <= 1}
+                onClick={() => setPage(currentPage - 1)}
               >«</button>
 
-              {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((p) => (
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                 <button
                   key={p}
-                  className={`join-item btn ${p === page ? "btn-active border-[#BDC9C5]" : ""}`}
-                  onClick={() => setSearchParams({ search, funding_area, page: String(p) })}
+                  className={`join-item btn ${p === currentPage ? "btn-active border-[#BDC9C5]" : ""}`}
+                  onClick={() => setPage(p)}
                 >{p}</button>
               ))}
 
               <button
                 className="join-item btn"
-                disabled={page >= pagination.total_pages}
-                onClick={() => setSearchParams({ search, funding_area, page: String(page + 1) })}
+                disabled={currentPage >= totalPages}
+                onClick={() => setPage(currentPage + 1)}
               >»</button>
             </div>
+            <p className="font-normal text-12px text-[#3E4946]">
+              عرض {start}-{end} من أصل {count} مؤسسة
+            </p>
           </div>
         )}
       </div>

@@ -116,7 +116,7 @@ const AdminDashboard = () => {
                 }
               />
               <StatCard
-                title="المؤسسات النشطة"
+                title="المؤسسات المانحه النشطة"
                 value={fmt(donors.total_active)}
                 sub="إجمالي المؤسسات المتاحة"
                 valueColor="text-primary"

@@ -26,7 +26,7 @@ export const donorValidationSchema = Yup.object({
   twitter_url: Yup.string().url("رابط غير صالح"),
   funding_areas: Yup.array().min(1, "أضف مجال تمويل واحد على الأقل"),
   funding_areas_note: Yup.string(),
-  acceptance_requirements: Yup.array().min(1, "أضف شرط قبول واحد على الأقل"),
+  acceptance_requirements: Yup.array(),
   acceptance_requirements_note: Yup.string(),
   submission_periods: Yup.string(),
 });
@@ -185,7 +185,7 @@ const DonorForm = ({ initialValues, onSubmit, onSuccess, submitLabel, logoUrl })
                     setFieldValue={setFieldValue}
                     placeholder="اكتب الشرط ثم اضغط Enter"
                   />
-                  <ErrorMsg name="acceptance_requirements" />
+                  {/* <ErrorMsg name="acceptance_requirements" /> */}
                 </div>
                 <div className="md:col-span-2">
                   <Label text="ملاحظة متطلبات القبول" />

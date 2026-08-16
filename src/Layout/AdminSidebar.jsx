@@ -1,6 +1,6 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-
+const logo = "/logo.png"
 const links = [
   {
     to: "/admin",
@@ -30,6 +30,7 @@ const links = [
   },
 ];
 
+
 const AdminSidebar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -52,8 +53,8 @@ const AdminSidebar = () => {
       ></label>
       <div className="flex min-h-full flex-col items-start bg-white is-drawer-close:w-14 is-drawer-open:w-64 transition-all duration-300 overflow-visible">
         <div className=" flex flex-col items-center w-full mb-6">
-          <div className="bg-primary is-drawer-close:!hidden is-drawer-close:size-10 is-drawer-open:size-16 center is-drawer-close:rounded-sm rounded-16px m-auto mt-10 mb-3 is-drawer-close:hidden">
-            <svg
+          <div className=" is-drawer-close:!hidden is-drawer-close:size-10 is-drawer-open:size-16 center is-drawer-close:rounded-sm rounded-16px m-auto mt-10 mb-3 is-drawer-close:hidden">
+            {/* <svg
               className="is-drawer-close:size-4"
               width="30"
               height="30"
@@ -65,7 +66,8 @@ const AdminSidebar = () => {
                 d="M4.5 24V13.5H7.5V24H4.5ZM13.5 24V13.5H16.5V24H13.5ZM0 30V27H30V30H0ZM22.5 24V13.5H25.5V24H22.5ZM0 10.5V7.5L15 0L30 7.5V10.5H0ZM6.675 7.5H15H23.325H6.675ZM6.675 7.5H23.325L15 3.375L6.675 7.5Z"
                 fill="white"
               />
-            </svg>
+            </svg> */}
+            <img src={logo} alt="logo" width={100} />
           </div>
           <div className="font-bold text-32px text-center text-primary is-drawer-close:hidden">
             نظام المنح
