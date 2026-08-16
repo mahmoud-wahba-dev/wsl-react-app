@@ -24,7 +24,7 @@ export const donorValidationSchema = Yup.object({
   website: Yup.string().url("رابط غير صالح"),
   facebook_url: Yup.string().url("رابط غير صالح"),
   twitter_url: Yup.string().url("رابط غير صالح"),
-  funding_areas: Yup.array().min(1, "أضف مجال تمويل واحد على الأقل"),
+  funding_areas: Yup.array(),
   funding_areas_note: Yup.string(),
   acceptance_requirements: Yup.array(),
   acceptance_requirements_note: Yup.string(),
@@ -172,9 +172,9 @@ const DonorForm = ({ initialValues, onSubmit, onSuccess, submitLabel, logoUrl })
                   />
                   <ErrorMsg name="funding_areas" />
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <Label text="ملاحظة مجالات التمويل" />
-                  <Field name="funding_areas_note" as="input" placeholder="أي ملاحظات إضافية..." className="input w-full" />
+                  <Textarea name="funding_areas_note"  placeholder="أي ملاحظات إضافية..." />
                   <ErrorMsg name="funding_areas_note" />
                 </div>
                 <div className="md:col-span-2">
