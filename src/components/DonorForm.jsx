@@ -20,7 +20,7 @@ const contactTypes = [
 
 export const donorValidationSchema = Yup.object({
   name: Yup.string().required("مطلوب").min(3, "قصير جداً"),
-  description: Yup.string().required("مطلوب").min(10, "قصير جداً"),
+  description: Yup.string(),
   website: Yup.string().url("رابط غير صالح"),
   facebook_url: Yup.string().url("رابط غير صالح"),
   twitter_url: Yup.string().url("رابط غير صالح"),
