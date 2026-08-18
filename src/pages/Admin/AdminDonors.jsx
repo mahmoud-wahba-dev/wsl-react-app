@@ -68,7 +68,7 @@ const AdminDonors = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div id="tour-admin-donors" className="flex justify-between items-center mb-8">
         <h1 className="text-32px font-bold text-[#0D1D2C]">المؤسسات المانحة</h1>
         <Link to="/admin/donors/create" className="btn btn-primary">
           إضافة مؤسسة مانحة

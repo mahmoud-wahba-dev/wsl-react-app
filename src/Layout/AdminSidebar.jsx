@@ -77,7 +77,7 @@ const AdminSidebar = () => {
           </p>
         </div>
         <div className="flex flex-col justify-between grow w-full">
-          <ul className="menu w-full grow ">
+          <ul id="tour-admin-sidebar" className="menu w-full grow ">
             {links.map((link) => (
               <li key={link.to}>
                 <NavLink

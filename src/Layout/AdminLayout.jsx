@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
+import AdminTour from "../components/AdminTour";
 
 const AdminLayout = () => {
   const drawerRef = useRef(null);
@@ -33,6 +34,7 @@ const AdminLayout = () => {
       </div>
 
       <AdminSidebar />
+      <AdminTour />
     </div>
   );
 };

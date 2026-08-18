@@ -34,7 +34,29 @@ const AdminNavbar = () => {
       </label>
       <div className="flex-1 px-4 font-medium">لوحة التحكم</div>
       <div className="flex-none">
-        <div className="dropdown dropdown-end">
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent("admin:start-tour"))}
+          className="btn btn-ghost btn-circle"
+          title="شرح استخدام النظام"
+          aria-label="شرح استخدام النظام"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="my-1.5 inline-block size-5"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <path d="M12 17h.01"></path>
+          </svg>
+        </button>
+        <div id="tour-admin-navbar" className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
             <div className="w-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
               {initials}

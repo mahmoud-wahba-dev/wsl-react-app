@@ -68,7 +68,7 @@ const AdminDashboard = () => {
   return (
     <section>
       <div className="container">
-        <div className="flex items-center justify-between my-10">
+        <div id="tour-admin-dashboard" className="flex items-center justify-between my-10">
           <div>
             <h1 className="text-32px text-[#0D1D2C] font-bold mb-1">
               لوحة التحكم

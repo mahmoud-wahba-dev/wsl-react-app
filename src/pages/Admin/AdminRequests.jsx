@@ -48,7 +48,7 @@ const AdminRequests = () => {
   return (
     <section>
       <div className="container">
-        <div className="my-10">
+        <div id="tour-admin-requests" className="my-10">
           <h1 className="text-32px text-[#0D1D2C] font-bold mb-1">
             طلبات المنح
           </h1>
