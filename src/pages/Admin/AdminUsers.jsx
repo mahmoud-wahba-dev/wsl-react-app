@@ -12,7 +12,7 @@ const AdminUsers = () => {
   const role = searchParams.get("role") || "";
   const page = Number(searchParams.get("page")) || 1;
 
-  const PAGE_SIZE = 7;
+  const PAGE_SIZE = 10;
 
   const setPage = (p, newRole) => {
     const params = new URLSearchParams();

@@ -4,7 +4,7 @@ import { api } from "../../utils/api";
 import Toast from "../../../public/services/toast";
 import ConfirmModal from "../../components/ConfirmModal";
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 10;
 
 const AdminDonors = () => {
   const [table, setTable] = useState(null);

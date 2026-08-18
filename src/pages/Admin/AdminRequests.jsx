@@ -9,7 +9,7 @@ const AdminRequests = () => {
   const search = searchParams.get("search") || "";
   const page = Number(searchParams.get("page")) || 1;
 
-  const PAGE_SIZE = 7;
+  const PAGE_SIZE = 10;
 
   const setPage = (p) => {
     const params = new URLSearchParams();
