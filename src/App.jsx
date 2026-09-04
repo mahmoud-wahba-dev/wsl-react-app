@@ -3,7 +3,6 @@ import MasterLayout from "./Layout/MasterLayout";
 import Organizations from "./pages/Organizations";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
-import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import InReview from "./pages/Auth/InReview";
 import MatchRequest from "./pages/MatchRequest";
@@ -26,8 +25,12 @@ import MatchResult from './pages/MatchResult';
 import OrgDetails from './pages/OrgDetails';
 import Requests from "./pages/Requests";
 import Profile from "./pages/Profile";
+import RootHome from "./pages/RootHome";
 
 const router = createBrowserRouter([
+  // Public / for guests; verified users see dashboard via RootHome
+  { path: "/", element: <RootHome /> },
+
   // Guest routes (login, register, reset-password)
   {
     element: <GuestRoute />,
@@ -53,15 +56,12 @@ const router = createBrowserRouter([
       {
         element: <MasterLayout />,
         children: [
-          { index: true, element: <Home /> },
-          
           { path: "requests", element: <Requests /> },
           { path: "match-result/:id", element: <MatchResult /> },
           { path: "organizations", element: <Organizations /> },
           { path: "organizations/:id", element: <OrgDetails /> },
           { path: "match-request", element: <MatchRequest /> },
           { path: "profile", element: <Profile /> },
-          
         ],
       },
     ],
