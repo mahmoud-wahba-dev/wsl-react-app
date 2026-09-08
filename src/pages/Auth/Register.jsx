@@ -1,4 +1,4 @@
-import { ErrorMessage, Field, Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import ErrorMsg from "../../composable/ErrorMsg";
@@ -12,6 +12,14 @@ const initialValues = {
   email: "",
   password: "",
   rePassword: "",
+  firstName: "",
+  lastName: "",
+  associationName: "",
+  associationDescription: "",
+  isLicensed: false,
+  hasBankAccount: false,
+  yearsOfExperience: "",
+  region: "",
   terms: false,
 };
 const validationSchema = Yup.object({
@@ -20,6 +28,18 @@ const validationSchema = Yup.object({
   rePassword: Yup.string()
     .required()
     .oneOf([Yup.ref("password")], "Passwords must match"),
+  firstName: Yup.string().required(),
+  lastName: Yup.string().required(),
+  associationName: Yup.string().required(),
+  associationDescription: Yup.string().required(),
+  isLicensed: Yup.boolean(),
+  hasBankAccount: Yup.boolean(),
+  yearsOfExperience: Yup.number()
+    .typeError("years of experience must be a number")
+    .required()
+    .min(0)
+    .integer(),
+  region: Yup.string().required(),
   terms: Yup.boolean().oneOf([true], "Terms is required to accept"),
 });
 
@@ -42,6 +62,16 @@ const Register = () => {
           email: values.email,
           password: values.password,
           re_password: values.rePassword,
+          first_name: values.firstName,
+          last_name: values.lastName,
+          organization: {
+            association_name: values.associationName,
+            association_description: values.associationDescription,
+            is_licensed: values.isLicensed,
+            has_bank_account: values.hasBankAccount,
+            years_of_experience: Number(values.yearsOfExperience),
+            region: values.region,
+          },
         }),
       });
       const data = await response.json();
@@ -79,7 +109,7 @@ const Register = () => {
   }, [errorMsgArr]);
   return (
     <section className="bg-[#F6F8F9] flex justify-center flex-col gap-4 items-center h-full min-h-[70vh] py-12">
-      <fieldset className="bg-white p-10 fieldset shadow-xl border-[#BDC9C54D] rounded-16px w-md border ">
+      <fieldset className="bg-white p-10 fieldset shadow-xl border-[#BDC9C54D] rounded-16px w-lg max-w-[90vw] border ">
         <p className="font-medium text-20px text-[#0D1D2C] mb-2">
           إنشاء حساب جديد{" "}
         </p>
@@ -119,6 +149,62 @@ const Register = () => {
                   />
                 </label>
                 <ErrorMsg name={"email"} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-2">
+                <div>
+                  <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+                    الاسم الأول
+                  </label>
+                  <label className="input w-full h-12">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10 10C8.9 10 7.95833 9.60833 7.175 8.825C6.39167 8.04167 6 7.1 6 6C6 4.9 6.39167 3.95833 7.175 3.175C7.95833 2.39167 8.9 2 10 2C11.1 2 12.0417 2.39167 12.825 3.175C13.6083 3.95833 14 4.9 14 6C14 7.1 13.6083 8.04167 12.825 8.825C12.0417 9.60833 11.1 10 10 10ZM2 18V15.2C2 14.6333 2.14583 14.1125 2.4375 13.6375C2.72917 13.1625 3.11667 12.8 3.6 12.55C4.63333 12.0333 5.68333 11.6458 6.75 11.3875C7.81667 11.1292 8.9 11 10 11C11.1 11 12.1833 11.1292 13.25 11.3875C14.3167 11.6458 15.3667 12.0333 16.4 12.55C16.8833 12.8 17.2708 13.1625 17.5625 13.6375C17.8542 14.1125 18 14.6333 18 15.2V18H2Z"
+                        fill="#BDC9C5"
+                      />
+                    </svg>
+                    <Field
+                      placeholder="محمد"
+                      name="firstName"
+                      type="text"
+                      className="grow"
+                    />
+                  </label>
+                  <ErrorMsg name={"firstName"} />
+                </div>
+
+                <div>
+                  <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+                    اسم العائلة
+                  </label>
+                  <label className="input w-full h-12">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10 10C8.9 10 7.95833 9.60833 7.175 8.825C6.39167 8.04167 6 7.1 6 6C6 4.9 6.39167 3.95833 7.175 3.175C7.95833 2.39167 8.9 2 10 2C11.1 2 12.0417 2.39167 12.825 3.175C13.6083 3.95833 14 4.9 14 6C14 7.1 13.6083 8.04167 12.825 8.825C12.0417 9.60833 11.1 10 10 10ZM2 18V15.2C2 14.6333 2.14583 14.1125 2.4375 13.6375C2.72917 13.1625 3.11667 12.8 3.6 12.55C4.63333 12.0333 5.68333 11.6458 6.75 11.3875C7.81667 11.1292 8.9 11 10 11C11.1 11 12.1833 11.1292 13.25 11.3875C14.3167 11.6458 15.3667 12.0333 16.4 12.55C16.8833 12.8 17.2708 13.1625 17.5625 13.6375C17.8542 14.1125 18 14.6333 18 15.2V18H2Z"
+                        fill="#BDC9C5"
+                      />
+                    </svg>
+                    <Field
+                      placeholder="العتيبي"
+                      name="lastName"
+                      type="text"
+                      className="grow"
+                    />
+                  </label>
+                  <ErrorMsg name={"lastName"} />
+                </div>
               </div>
 
               <div className="mb-2">
@@ -185,6 +271,115 @@ const Register = () => {
                   </span>
                 </label>
                 <ErrorMsg name={"rePassword"} />
+              </div>
+
+              <div className="divider font-normal text-12px text-[#3E4946] my-4">
+                بيانات الجمعية
+              </div>
+
+              <div className="mb-2">
+                <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+                  اسم الجمعية
+                </label>
+                <label className="input w-full h-12">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2 18V4L10 0L18 4V18H12V12H8V18H2Z"
+                      fill="#BDC9C5"
+                    />
+                  </svg>
+                  <Field
+                    placeholder="جمعية البر الخيرية"
+                    name="associationName"
+                    type="text"
+                    className="grow"
+                  />
+                </label>
+                <ErrorMsg name={"associationName"} />
+              </div>
+
+              <div className="mb-2">
+                <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+                  وصف الجمعية
+                </label>
+                <Field
+                  as="textarea"
+                  placeholder="جمعية خيرية متخصصة في التنمية الاجتماعية"
+                  name="associationDescription"
+                  className="textarea h-24 w-full"
+                />
+                <ErrorMsg name={"associationDescription"} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mb-2">
+                <div>
+                  <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+                    المنطقة
+                  </label>
+                  <label className="input w-full h-12">
+                    <svg
+                      width="16"
+                      height="20"
+                      viewBox="0 0 16 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M8 10C8.55 10 9.02083 9.80417 9.4125 9.4125C9.80417 9.02083 10 8.55 10 8C10 7.45 9.80417 6.97917 9.4125 6.5875C9.02083 6.19583 8.55 6 8 6C7.45 6 6.97917 6.19583 6.5875 6.5875C6.19583 6.97917 6 7.45 6 8C6 8.55 6.19583 9.02083 6.5875 9.4125C6.97917 9.80417 7.45 10 8 10ZM8 20C5.31667 17.7167 3.3125 15.5958 1.9875 13.6375C0.6625 11.6792 0 9.86667 0 8.2C0 5.7 0.804167 3.70833 2.4125 2.225C4.02083 0.741667 5.88333 0 8 0C10.1167 0 11.9792 0.741667 13.5875 2.225C15.1958 3.70833 16 5.7 16 8.2C16 9.86667 15.3375 11.6792 14.0125 13.6375C12.6875 15.5958 10.6833 17.7167 8 20Z"
+                        fill="#BDC9C5"
+                      />
+                    </svg>
+                    <Field
+                      placeholder="الرياض"
+                      name="region"
+                      type="text"
+                      className="grow"
+                    />
+                  </label>
+                  <ErrorMsg name={"region"} />
+                </div>
+
+                <div>
+                  <label className="label font-medium text-14px text-[#0D1D2C] mb-2">
+                    سنوات الخبرة
+                  </label>
+                  <label className="input w-full h-12">
+                    <Field
+                      placeholder="5"
+                      name="yearsOfExperience"
+                      type="number"
+                      min="0"
+                      className="grow"
+                    />
+                  </label>
+                  <ErrorMsg name={"yearsOfExperience"} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mb-4 mt-1">
+                <label className="flex items-center gap-2 border border-[#BDC9C54D] rounded-8px px-3 h-12 cursor-pointer font-normal text-12px text-[#3E4946]">
+                  <Field
+                    name="isLicensed"
+                    type="checkbox"
+                    className="checkbox checkbox-sm checkbox-primary"
+                  />
+                  الجمعية مرخصة
+                </label>
+
+                <label className="flex items-center gap-2 border border-[#BDC9C54D] rounded-8px px-3 h-12 cursor-pointer font-normal text-12px text-[#3E4946]">
+                  <Field
+                    name="hasBankAccount"
+                    type="checkbox"
+                    className="checkbox checkbox-sm checkbox-primary"
+                  />
+                  تمتلك حساب بنكي
+                </label>
               </div>
 
               <div className="">
