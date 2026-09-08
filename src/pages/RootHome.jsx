@@ -17,6 +17,11 @@ const RootHome = () => {
     return <Navigate to="/admin" replace />;
   }
 
+  // Unsubscribed regular users can only see /requests and /match-request
+  if (user.is_subscribed !== true) {
+    return <Navigate to="/requests" replace />;
+  }
+
   return (
     <>
       <Navbar />

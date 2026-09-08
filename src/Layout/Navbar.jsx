@@ -12,11 +12,18 @@ export default function Navbar() {
     navigate("/login", { replace: true });
   };
 
+  const isAdmin = user?.role === "admin";
+  const isSubscribed = user?.is_subscribed === true;
+  // Unsubscribed non-admin users can only reach /requests and /match-request
+  const isRestricted = !isAdmin && !isSubscribed;
+
   const items = [
-    ...(user?.role === "admin"
+    ...(isAdmin
       ? [{ name: "لوحة الإدارة الطلبات", href: "/admin" }]
-      : [{ name: "الرئيسيه", href: "/" }]),
-    { name: "المؤسسات", href: "/organizations" },
+      : isRestricted
+        ? []
+        : [{ name: "الرئيسيه", href: "/" }]),
+    ...(isRestricted ? [] : [{ name: "المؤسسات", href: "/organizations" }]),
     { name: "الطلبات", href: "/requests" },
     { name: "تقديم طلب جديد", href: "/match-request" },
   ];
@@ -116,17 +123,31 @@ export default function Navbar() {
                   className="dropdown-content menu bg-base-100 rounded-box z-50 w-56 p-3 shadow-lg"
                 >
                    <li className="p-2 border-b border-gray-100 mb-1 [&.active]:!bg-transparent [&>*]:!bg-transparent">
-                    <Link to="/profile" className="flex items-center gap-3 no-underline hover:opacity-80 transition-opacity">
-                      <div className="avatar placeholder">
-                        <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
-                          {(user?.email || "U").charAt(0).toUpperCase()}
+                    {isRestricted ? (
+                      <div className="flex items-center gap-3">
+                        <div className="avatar placeholder">
+                          <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
+                            {(user?.email || "U").charAt(0).toUpperCase()}
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm text-[#0D1D2C]">{user?.email}</span>
+                          <span className="font-normal text-xs text-[#3E4946]">مستخدم</span>
                         </div>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="font-medium text-sm text-[#0D1D2C]">{user?.email}</span>
-                        <span className="font-normal text-xs text-[#3E4946]">{user?.role === "admin" ? "مدير النظام" : "مستخدم"}</span>
-                      </div>
-                    </Link>
+                    ) : (
+                      <Link to="/profile" className="flex items-center gap-3 no-underline hover:opacity-80 transition-opacity">
+                        <div className="avatar placeholder">
+                          <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
+                            {(user?.email || "U").charAt(0).toUpperCase()}
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm text-[#0D1D2C]">{user?.email}</span>
+                          <span className="font-normal text-xs text-[#3E4946]">{isAdmin ? "مدير النظام" : "مستخدم"}</span>
+                        </div>
+                      </Link>
+                    )}
                   </li>
                   <li className="[&.active]:!bg-transparent">
                     <button

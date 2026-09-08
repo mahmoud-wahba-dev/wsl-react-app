@@ -19,6 +19,7 @@ import LoadingScreen from "./components/LoadingScreen";
 import AuthGuard from "./guards/AuthGuard";
 import GuestRoute from "./guards/GuestRoute";
 import AdminRoute from "./guards/AdminRoute";
+import SubscriptionRoute from "./guards/SubscriptionRoute";
 import MatchResult from './pages/MatchResult';
 import OrgDetails from './pages/OrgDetails';
 import Requests from "./pages/Requests";
@@ -46,12 +47,21 @@ const router = createBrowserRouter([
       {
         element: <MasterLayout />,
         children: [
+          // Always available to any authenticated user (subscribed or not)
           { path: "requests", element: <Requests /> },
-          { path: "match-result/:id", element: <MatchResult /> },
-          { path: "organizations", element: <Organizations /> },
-          { path: "organizations/:id", element: <OrgDetails /> },
           { path: "match-request", element: <MatchRequest /> },
-          { path: "profile", element: <Profile /> },
+
+          // Subscription-gated: unsubscribed non-admin users are redirected
+          // to /requests
+          {
+            element: <SubscriptionRoute />,
+            children: [
+              { path: "match-result/:id", element: <MatchResult /> },
+              { path: "organizations", element: <Organizations /> },
+              { path: "organizations/:id", element: <OrgDetails /> },
+              { path: "profile", element: <Profile /> },
+            ],
+          },
         ],
       },
     ],
