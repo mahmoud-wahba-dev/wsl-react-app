@@ -14,13 +14,6 @@ const AuthGuard = () => {
     return <Navigate to="/login" replace />;
   }
 
-  const isAdmin = user.role === "admin";
-  const isVerified = user.is_verified === true;
-
-  if (isAdmin === false && isVerified === false) {
-    return <Navigate to="/in-review" replace />;
-  }
-
   return <Outlet />;
 };
 

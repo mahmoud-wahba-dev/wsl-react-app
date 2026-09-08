@@ -14,9 +14,6 @@ const GuestRoute = () => {
     if (user.role === "admin") {
       return <Navigate to="/admin" replace />;
     }
-    if (user.is_verified === false) {
-      return <Navigate to="/in-review" replace />;
-    }
     return <Navigate to="/" replace />;
   }
 

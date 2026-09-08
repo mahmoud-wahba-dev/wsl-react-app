@@ -17,10 +17,6 @@ const RootHome = () => {
     return <Navigate to="/admin" replace />;
   }
 
-  if (user.is_verified === false) {
-    return <Navigate to="/in-review" replace />;
-  }
-
   return (
     <>
       <Navbar />
