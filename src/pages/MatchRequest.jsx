@@ -1,4 +1,4 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
@@ -11,13 +11,6 @@ import TagInput from "../composable/TagInput";
 import Toast from "../../public/services/toast";
 
 const initialValues = {
-  orgName: "",
-  yearsExp: "",
-  description: "",
-  countery: "المملكة العربية السعودية",
-  city: "",
-  isLiscenced: false,
-  isBankAccount: false,
   projectName: "",
   projectFields: [],
   projectIdea: "",
@@ -31,13 +24,6 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object({
-  orgName: Yup.string().required("مطلوب").min(2, "اسم قصير جداً"),
-  yearsExp: Yup.number("رقم غير صالح").required("مطلوب").positive(),
-  description: Yup.string().required("مطلوب").min(10, "الوصف قصير جداً"),
-  countery: Yup.string().required("مطلوب"),
-  city: Yup.string().required("مطلوب"),
-  isLiscenced: Yup.boolean().required("مطلوب"),
-  isBankAccount: Yup.boolean().required("مطلوب"),
   projectName: Yup.string().required("مطلوب").min(3, "عنوان قصير جداً"),
   projectFields: Yup.array().min(1, "اختر مجالاً واحداً على الأقل"),
   projectIdea: Yup.string().required("مطلوب").min(10, "الشرح قصير جداً"),
@@ -58,13 +44,6 @@ const MatchRequest = () => {
       const data = await api("/api/grants/requests/", {
         method: "POST",
         body: JSON.stringify({
-          association_name: values.orgName,
-          years_of_experience: Number(values.yearsExp),
-          description: values.description,
-          country: values.countery,
-          city: values.city,
-          is_licensed: values.isLiscenced,
-          has_bank_account: values.isBankAccount,
           project_title: values.projectName,
           focus_areas: values.projectFields,
           project_idea: values.projectIdea,
@@ -105,53 +84,6 @@ const MatchRequest = () => {
               <p className="font-normal text-18px text-[#3E4946] text-center mb-12">
                 أكمل البيانات التالية لبدء عملية الربط الذكي مع المانحين
               </p>
-              <div className="bg-white rounded-12px border border-[#BDC9C54D] p-8 shadow-xl drop-shadow-xl mb-8">
-                <div className="flex items-center gap-2 font-medium text-20px text-primary mb-5">
-                  <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 18V0H10V4H20V18H0ZM2 16H8V14H2V16ZM2 12H8V10H2V12ZM2 8H8V6H2V8ZM2 4H8V2H2V4ZM10 16H18V6H10V16ZM12 10V8H16V10H12ZM12 14V12H16V14H12Z" fill="#006153"/>
-                  </svg>
-                  بيانات الجهة
-                </div>
-                <div className="divider"></div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <Label text="اسم الجمعية / المؤسسة" />
-                    <Input name="orgName" placeholder="أدخل الاسم الرسمي للجهة" />
-                    <ErrorMsg name="orgName" />
-                  </div>
-                  <div>
-                    <Label text="سنوات الخبرة" />
-                    <Input name="yearsExp" placeholder="مثال 5" />
-                    <ErrorMsg name="yearsExp" />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label text="وصف مختصر للجهة" />
-                    <Textarea name="description" placeholder="نبذة عن رؤية وأهداف الجهة..." />
-                    <ErrorMsg name="description" />
-                  </div>
-                  <div>
-                    <Label text="الدولة" />
-                    <Field as="select" name="countery" className="select select-ghost w-full">
-                      <option>المملكة العربية السعودية</option>
-                    </Field>
-                    <ErrorMsg name="countery" />
-                  </div>
-                  <div>
-                    <Label text="المنطقة / المدينة" />
-                    <Input name="city" placeholder="مثال: الرياض" />
-                    <ErrorMsg name="city" />
-                  </div>
-                  <div className="flex items-center justify-between bg-[#EEF4FF] rounded-8px p-4">
-                    <p className="font-normal text-base text-[#0D1D2C]">الجهة مرخّصة رسمياً؟</p>
-                    <Field type="checkbox" name="isLiscenced" className="toggle toggle-sm toggle-primary" />
-                  </div>
-                  <div className="flex items-center justify-between bg-[#EEF4FF] rounded-8px p-4">
-                    <p className="font-normal text-base text-[#0D1D2C]">يوجد حساب بنكي رسمي؟</p>
-                    <Field type="checkbox" name="isBankAccount" className="toggle toggle-sm toggle-primary" />
-                  </div>
-                </div>
-              </div>
-
               <div className="bg-white rounded-12px border border-[#BDC9C54D] p-8 shadow-xl drop-shadow-xl">
                 <div className="flex items-center gap-2 font-medium text-20px text-primary mb-5">
                   <svg width="15" height="20" viewBox="0 0 15 20" fill="none" xmlns="http://www.w3.org/2000/svg">
