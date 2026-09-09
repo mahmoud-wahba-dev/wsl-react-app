@@ -17,11 +17,9 @@ const RootHome = () => {
     return <Navigate to="/admin" replace />;
   }
 
-  // Unsubscribed regular users can only see /requests and /match-request.
-  // Unlicensed users start on the match form; licensed users on requests.
+  // Unsubscribed regular users start on the match form.
   if (user.is_subscribed !== true) {
-    const target = user.is_licensed === false ? "/match-request" : "/requests";
-    return <Navigate to={target} replace />;
+    return <Navigate to="/match-request" replace />;
   }
 
   return (

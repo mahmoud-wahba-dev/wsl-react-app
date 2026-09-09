@@ -26,9 +26,8 @@ const SubscriptionRoute = () => {
   const isAdmin = user.role === "admin";
 
   if (!isAdmin && !isSubscribed) {
-    // Unlicensed users land on the match form, licensed users on requests.
-    const target = user.is_licensed === false ? "/match-request" : "/requests";
-    return <Navigate to={target} replace />;
+    // Unsubscribed users land on the match form.
+    return <Navigate to="/match-request" replace />;
   }
 
   return <Outlet />;
