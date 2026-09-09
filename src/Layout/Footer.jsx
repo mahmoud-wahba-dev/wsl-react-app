@@ -1,12 +1,4 @@
-import React from "react";
-import { Link } from "react-router-dom";
 import logo from "/logo.png";
-
-const items = [
-  { name: "عن المنصة", to: "/about" },
-  { name: "الشروط والأحكام", to: "/terms" },
-  { name: "اتصل بنا", to: "/contact" },
-];
 
 const Year = new Date().getFullYear().toLocaleString("ar-SA");
 const Footer = () => {
@@ -17,17 +9,6 @@ const Footer = () => {
           <aside>
                 <img className="max-w-full max-h-full h-24" height={"65"} src={logo} alt="" />
           </aside>
-          <nav className="flex  gap-8 xl:gap-16">
-            {items.map((item, idx) => (
-              <Link
-                key={idx}
-                to={item.to}
-                className="link link-hover font-normal text-xs text-[#3E4946]"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
 
           <nav>
             <p className="font-normal text-xs text-[#3E4946]">
