@@ -7,6 +7,7 @@ export async function api(endpoint, options = {}) {
   const config = {
     headers: {
       "Content-Type": "application/json",
+      "Accept-Language": "ar",
       ...options.headers,
     },
     ...options,
