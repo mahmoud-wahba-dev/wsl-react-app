@@ -124,26 +124,26 @@ export default function Navbar() {
                 >
                    <li className="p-2 border-b border-gray-100 mb-1 [&.active]:!bg-transparent [&>*]:!bg-transparent">
                     {isRestricted ? (
-                      <div className="flex items-center gap-3">
-                        <div className="avatar placeholder">
+                      <div className="flex items-center gap-3 w-full">
+                        <div className="avatar placeholder shrink-0">
                           <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
                             {(user?.email || "U").charAt(0).toUpperCase()}
                           </div>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-medium text-sm text-[#0D1D2C]">{user?.email}</span>
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="font-medium text-sm text-[#0D1D2C] truncate" title={user?.email}>{user?.email}</span>
                           <span className="font-normal text-xs text-[#3E4946]">مستخدم</span>
                         </div>
                       </div>
                     ) : (
-                      <Link to="/profile" className="flex items-center gap-3 no-underline hover:opacity-80 transition-opacity">
-                        <div className="avatar placeholder">
+                      <Link to="/profile" className="flex items-center gap-3 w-full no-underline hover:opacity-80 transition-opacity">
+                        <div className="avatar placeholder shrink-0">
                           <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
                             {(user?.email || "U").charAt(0).toUpperCase()}
                           </div>
                         </div>
-                        <div className="flex flex-col">
-                          <span className="font-medium text-sm text-[#0D1D2C]">{user?.email}</span>
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <span className="font-medium text-sm text-[#0D1D2C] truncate" title={user?.email}>{user?.email}</span>
                           <span className="font-normal text-xs text-[#3E4946]">{isAdmin ? "مدير النظام" : "مستخدم"}</span>
                         </div>
                       </Link>
