@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { api } from "../utils/api";
 import GrantRequestCard from "../components/GrantRequestCard";
+import Toast from "../../public/services/toast";
 
 const mapRequest = (item) => ({
   id: item.id,
@@ -25,8 +26,13 @@ const Requests = () => {
       try {
         const data = await api("/api/grants/requests/");
         setRequests(data.data.results.map(mapRequest));
-      } catch {
+      } catch (err) {
         setRequests([]);
+        // Surface the backend message (e.g. subscription/permission errors).
+        if (err?.message) {
+          Toast.error(err.message);
+        }
+        err?.errors?.forEach?.((e) => e?.message && Toast.error(e.message));
       }
       setLoading(false);
     };
