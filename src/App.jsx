@@ -47,16 +47,17 @@ const router = createBrowserRouter([
       {
         element: <MasterLayout />,
         children: [
-          // Always available to any authenticated user (subscribed or not)
+          // Always available to any authenticated user (subscribed or not).
+          // The match action is quota-limited on the backend (free matches,
+          // then a subscribe message), so match-result is reachable by all.
           { path: "requests", element: <Requests /> },
           { path: "match-request", element: <MatchRequest /> },
+          { path: "match-result/:id", element: <MatchResult /> },
 
           // Subscription-gated: unsubscribed non-admin users are redirected
-          // to /requests
           {
             element: <SubscriptionRoute />,
             children: [
-              { path: "match-result/:id", element: <MatchResult /> },
               { path: "organizations", element: <Organizations /> },
               { path: "organizations/:id", element: <OrgDetails /> },
               { path: "profile", element: <Profile /> },
