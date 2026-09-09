@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "../utils/api";
 import MatchDonorCard from "../components/MatchDonorCard";
 import Loader from "../components/Loader";
+import Toast from "../../public/services/toast";
 
 const MatchResult = () => {
   const { id } = useParams();
@@ -17,8 +18,13 @@ const MatchResult = () => {
           method: "POST",
         });
         setResults(data.data.results);
-      } catch {
+      } catch (err) {
         setResults([]);
+        // Surface the backend message (e.g. subscription/quota errors).
+        if (err?.message) {
+          Toast.error(err.message);
+        }
+        err?.errors?.forEach?.((e) => e?.message && Toast.error(e.message));
       }
       setLoading(false);
     };

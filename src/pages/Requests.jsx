@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
 import { api } from "../utils/api";
-import MatchDonorCard from "../components/MatchDonorCard";
 import GrantRequestCard from "../components/GrantRequestCard";
+
+const mapRequest = (item) => ({
+  id: item.id,
+  title: item.project_title,
+  organization: item.owner?.association_name || "",
+  amount: item.requested_amount ?? "-",
+  date: new Date(item.created_at).toLocaleDateString("ar-SA"),
+  tags: item.focus_areas || [],
+  status: "تم الارسال",
+  statusType: "sent",
+  icon: null,
+});
 
 const Requests = () => {
   const [requests, setRequests] = useState([]);
@@ -22,20 +32,6 @@ const Requests = () => {
     };
     loadRequests();
   }, []);
-
-  function mapRequest(item) {
-    return {
-      id: item.id,
-      title: item.project_title,
-      organization: item.association_name,
-      amount: item.requested_amount,
-      date: new Date(item.created_at).toLocaleDateString("ar-SA"),
-      tags: item.focus_areas,
-      status: "تم الارسال",
-      statusType: "sent",
-      icon: null,
-    };
-  }
 
   return (
     <section>

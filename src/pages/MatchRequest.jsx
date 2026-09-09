@@ -23,42 +23,64 @@ const initialValues = {
   requestedAmount: "",
 };
 
+// Treat empty inputs as "no value" so optional number fields don't error.
+const emptyToUndefined = (value, original) =>
+  original === "" || original === null ? undefined : value;
+
 const validationSchema = Yup.object({
-  projectName: Yup.string().required("مطلوب").min(3, "عنوان قصير جداً"),
-  projectFields: Yup.array().min(1, "اختر مجالاً واحداً على الأقل"),
-  projectIdea: Yup.string().required("مطلوب").min(10, "الشرح قصير جداً"),
-  objectives: Yup.string().required("مطلوب").min(10, "الأهداف قصيرة جداً"),
-  operationalPlan: Yup.string().required("مطلوب").min(10, "الخطة قصيرة جداً"),
-  beneficiariesCount: Yup.number("رقم غير صالح").required("مطلوب").positive().integer(),
-  expectedImpact: Yup.string().required("مطلوب").min(10, "الأثر قصير جداً"),
-  sustainability: Yup.string().required("مطلوب").min(10, "الاستدامة قصيرة جداً"),
-  durationMonths: Yup.number("رقم غير صالح").required("مطلوب").positive().integer(),
-  requestedAmount: Yup.number("رقم غير صالح").required("مطلوب").positive(),
+  projectName: Yup.string(),
+  projectFields: Yup.array(),
+  projectIdea: Yup.string(),
+  objectives: Yup.string(),
+  operationalPlan: Yup.string(),
+  beneficiariesCount: Yup.number("رقم غير صالح")
+    .transform(emptyToUndefined)
+    .positive()
+    .integer(),
+  expectedImpact: Yup.string(),
+  sustainability: Yup.string(),
+  durationMonths: Yup.number("رقم غير صالح")
+    .transform(emptyToUndefined)
+    .positive()
+    .integer(),
+  requestedAmount: Yup.number("رقم غير صالح")
+    .transform(emptyToUndefined)
+    .positive(),
 });
 
 const MatchRequest = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values, { setSubmitting }) => {
+    // Omit empty optional fields so blanks stay null instead of becoming 0/"".
+    const text = (v) => (v?.trim() ? v.trim() : undefined);
+    const num = (v) => (v !== "" && v != null ? Number(v) : undefined);
+
+    const payload = {
+      project_title: values.projectName?.trim() || "",
+      focus_areas: values.projectFields?.length ? values.projectFields : undefined,
+      project_idea: text(values.projectIdea),
+      objectives: text(values.objectives),
+      operational_plan: text(values.operationalPlan),
+      beneficiaries_count: num(values.beneficiariesCount),
+      expected_impact: text(values.expectedImpact),
+      sustainability: text(values.sustainability),
+      duration_months: num(values.durationMonths),
+      requested_amount: num(values.requestedAmount),
+    };
+    // Drop keys with undefined values from the request body.
+    Object.keys(payload).forEach(
+      (k) => payload[k] === undefined && delete payload[k]
+    );
+
     try {
       const data = await api("/api/grants/requests/", {
         method: "POST",
-        body: JSON.stringify({
-          project_title: values.projectName,
-          focus_areas: values.projectFields,
-          project_idea: values.projectIdea,
-          objectives: values.objectives,
-          operational_plan: values.operationalPlan,
-          beneficiaries_count: Number(values.beneficiariesCount),
-          expected_impact: values.expectedImpact,
-          sustainability: values.sustainability,
-          duration_months: Number(values.durationMonths),
-          requested_amount: Number(values.requestedAmount),
-        }),
+        body: JSON.stringify(payload),
       });
       if (data.status === 1) {
         Toast.success("تم تقديم الطلب بنجاح");
-        navigate("/");
+        navigate("/requests");
       } else {
         Toast.error(data.message);
       }
