@@ -17,6 +17,13 @@ export default function Navbar() {
   // Unsubscribed non-admin users can only reach /requests and /match-request
   const isRestricted = !isAdmin && !isSubscribed;
 
+  const fullName = [user?.first_name, user?.last_name]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+  const displayName = fullName || user?.email || "";
+  const avatarInitial = (displayName || "U").charAt(0).toUpperCase();
+
   const items = [
     ...(isAdmin
       ? [{ name: "لوحة الإدارة الطلبات", href: "/admin" }]
@@ -115,7 +122,7 @@ export default function Navbar() {
                   className="btn btn-ghost btn-circle avatar"
                 >
                   <div className="w-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
-                    {(user?.email || "U").charAt(0).toUpperCase()}
+                    {avatarInitial}
                   </div>
                 </div>
                 <ul
@@ -127,11 +134,11 @@ export default function Navbar() {
                       <div className="flex items-center gap-3 w-full">
                         <div className="avatar placeholder shrink-0">
                           <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
-                            {(user?.email || "U").charAt(0).toUpperCase()}
+                            {avatarInitial}
                           </div>
                         </div>
                         <div className="flex flex-col min-w-0 flex-1">
-                          <span className="font-medium text-sm text-[#0D1D2C] truncate" title={user?.email}>{user?.email}</span>
+                          <span className="font-medium text-sm text-[#0D1D2C] truncate" title={displayName}>{displayName}</span>
                           <span className="font-normal text-xs text-[#3E4946]">مستخدم</span>
                         </div>
                       </div>
@@ -139,11 +146,11 @@ export default function Navbar() {
                       <Link to="/profile" className="flex items-center gap-3 w-full no-underline hover:opacity-80 transition-opacity">
                         <div className="avatar placeholder shrink-0">
                           <div className="bg-primary text-white w-10 rounded-full flex items-center justify-center text-base font-bold">
-                            {(user?.email || "U").charAt(0).toUpperCase()}
+                            {avatarInitial}
                           </div>
                         </div>
                         <div className="flex flex-col min-w-0 flex-1">
-                          <span className="font-medium text-sm text-[#0D1D2C] truncate" title={user?.email}>{user?.email}</span>
+                          <span className="font-medium text-sm text-[#0D1D2C] truncate" title={displayName}>{displayName}</span>
                           <span className="font-normal text-xs text-[#3E4946]">{isAdmin ? "مدير النظام" : "مستخدم"}</span>
                         </div>
                       </Link>
