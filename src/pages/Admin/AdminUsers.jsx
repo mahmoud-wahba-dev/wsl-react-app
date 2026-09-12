@@ -17,8 +17,8 @@ const AdminUsers = () => {
   const setPage = (p, newRole) => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
-    if (newRole) params.set("role", newRole);
-    else if (role) params.set("role", role);
+    const activeRole = newRole !== undefined ? newRole : role;
+    if (activeRole) params.set("role", activeRole);
     params.set("page", String(p));
     params.set("page_size", String(PAGE_SIZE));
     setSearchParams(params);
@@ -155,7 +155,7 @@ const AdminUsers = () => {
                 className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
               >
                 <li>
-                  <a onClick={() => setPage(1)}>الكل</a>
+                  <a onClick={() => setPage(1, "")}>الكل</a>
                 </li>
                 <li>
                   <a onClick={() => setPage(1, "admin")}>مدير</a>
