@@ -1,10 +1,12 @@
 import { useSearchParams } from "react-router-dom";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
+import Toast from "../../../public/services/toast";
 
 const AdminUsers = () => {
   const [userTable, setUserTable] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingId, setLoadingId] = useState(null);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
@@ -52,6 +54,33 @@ const AdminUsers = () => {
   const pageSize = userTable?.page_size || PAGE_SIZE;
   const start = count ? (currentPage - 1) * pageSize + 1 : 0;
   const end = (currentPage - 1) * pageSize + users.length;
+
+  const handleSubscription = async (id, isSubscribed) => {
+    setLoadingId(id);
+    const previous = userTable;
+
+    setUserTable((prev) => ({
+      ...prev,
+      results: (prev?.results || []).map((u) =>
+        u.id === id ? { ...u, is_subscribed: !isSubscribed } : u
+      ),
+    }));
+
+    try {
+      const endpoint = isSubscribed
+        ? `/api/admin/users/${id}/unsubscribe/`
+        : `/api/admin/users/${id}/subscribe/`;
+
+      const res = await api(endpoint, { method: "POST" });
+      Toast.success(res.message || (isSubscribed ? "تم إلغاء الاشتراك" : "تم تفعيل الاشتراك"));
+      getUsers();
+    } catch (error) {
+      setUserTable(previous);
+      Toast.error(error?.message || "حدث خطأ");
+    } finally {
+      setLoadingId(null);
+    }
+  };
 
 
   return (
@@ -155,12 +184,15 @@ const AdminUsers = () => {
                   <th className="font-medium text-14px text-[#3E4946] py-6">
                     الاشتراك
                   </th>
+                  <th className="font-medium text-14px text-[#3E4946] py-6">
+                    الإجراءات
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={4} className="text-center py-10">
+                    <td colSpan={5} className="text-center py-10">
                       <span className="loading loading-spinner loading-lg text-primary"></span>
                     </td>
                   </tr>
@@ -187,11 +219,30 @@ const AdminUsers = () => {
                           {item.is_subscribed ? "مشترك" : "غير مشترك"}
                         </div>
                       </td>
+                      {item.role === "user" ? (
+                        <td>
+                          <button
+                            className={`btn btn-outline font-normal text-12px ${item.is_subscribed ? "btn-error" : "btn-primary"}`}
+                            onClick={() => handleSubscription(item.id, item.is_subscribed)}
+                            disabled={loadingId === item.id}
+                          >
+                            {loadingId === item.id ? (
+                              <span className="loading loading-spinner"></span>
+                            ) : item.is_subscribed ? (
+                              "إلغاء الاشتراك"
+                            ) : (
+                              "تفعيل الاشتراك"
+                            )}
+                          </button>
+                        </td>
+                      ) : (
+                        <td></td>
+                      )}
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="text-center py-10 text-gray-500">
+                    <td colSpan={5} className="text-center py-10 text-gray-500">
                       لا يوجد مستخدمين
                     </td>
                   </tr>
