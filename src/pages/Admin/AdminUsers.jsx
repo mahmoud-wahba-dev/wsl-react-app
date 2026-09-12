@@ -54,24 +54,24 @@ const AdminUsers = () => {
   const start = count ? (currentPage - 1) * pageSize + 1 : 0;
   const end = (currentPage - 1) * pageSize + users.length;
 
-  const handleStatus = async (id, isVerified) => {
+  const handleStatus = async (id, isActive) => {
     setLoadingId(id);
     const previous = userTable;
 
     setUserTable((prev) => ({
       ...prev,
       results: (prev?.results || []).map((u) =>
-        u.id === id ? { ...u, isVerified: !isVerified } : u
+        u.id === id ? { ...u, is_active: !isActive } : u
       ),
     }));
 
     try {
-      const endpoint = isVerified
-        ? `/api/auth/users/${id}/unverify/`
-        : `/api/auth/users/${id}/verify/`;
+      const endpoint = isActive
+        ? `/api/admin/users/${id}/deactivate/`
+        : `/api/admin/users/${id}/activate/`;
 
       const res = await api(endpoint, { method: "POST" });
-      Toast.success(res.message);
+      Toast.success(res.message || (isActive ? "تم إلغاء التفعيل" : "تم التفعيل"));
       getUsers();
       setLoadingId(null);
     } catch (error) {
@@ -215,25 +215,25 @@ const AdminUsers = () => {
                       </td>
                       <td>
                         <div
-                          className={`font-normal text-12px ${item.is_verified ? "text-primary" : "text-error"}`}
+                          className={`font-normal text-12px ${item.is_active ? "text-primary" : "text-error"}`}
                         >
-                          {item.is_verified == true ? "نشط" : "غير نشط"}
+                          {item.is_active ? "نشط" : "غير نشط"}
                           <span></span>
                         </div>
                       </td>
                       {item.role == "user" ? (
                         <th>
                           <button
-                            className={`btn btn-outline font-normal text-12px ${item.is_verified ? "btn-error" : "btn-primary"}`}
+                            className={`btn btn-outline font-normal text-12px ${item.is_active ? "btn-error" : "btn-primary"}`}
                             onClick={() =>
-                              handleStatus(item.id, item.is_verified)
+                              handleStatus(item.id, item.is_active)
                             }
                             disabled={loadingId === item.id}
                           >
                             {loadingId === item.id ? (
                               <span className="loading loading-spinner"></span>
-                            ) : item.is_verified ? (
-                              " إلغاء التفعيل"
+                            ) : item.is_active ? (
+                              "إلغاء التفعيل"
                             ) : (
                               "تفعيل"
                             )}
