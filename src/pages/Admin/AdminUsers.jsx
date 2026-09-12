@@ -1,12 +1,11 @@
 import { useSearchParams } from "react-router-dom";
 import { api } from "../../utils/api";
 import { useEffect, useState } from "react";
-import Toast from "../../../public/services/toast";
 
 const AdminUsers = () => {
   const [userTable, setUserTable] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [loadingId, setLoadingId] = useState(null);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get("search") || "";
   const role = searchParams.get("role") || "";
@@ -54,33 +53,6 @@ const AdminUsers = () => {
   const start = count ? (currentPage - 1) * pageSize + 1 : 0;
   const end = (currentPage - 1) * pageSize + users.length;
 
-  const handleStatus = async (id, isActive) => {
-    setLoadingId(id);
-    const previous = userTable;
-
-    setUserTable((prev) => ({
-      ...prev,
-      results: (prev?.results || []).map((u) =>
-        u.id === id ? { ...u, is_active: !isActive } : u
-      ),
-    }));
-
-    try {
-      const endpoint = isActive
-        ? `/api/admin/users/${id}/deactivate/`
-        : `/api/admin/users/${id}/activate/`;
-
-      const res = await api(endpoint, { method: "POST" });
-      Toast.success(res.message || (isActive ? "تم إلغاء التفعيل" : "تم التفعيل"));
-      getUsers();
-      setLoadingId(null);
-    } catch (error) {
-      console.log(error);
-      setUserTable(previous);
-      setLoadingId(null);
-      Toast.error(error?.message || "حدث خطأ");
-    }
-  };
 
   return (
     <section>
@@ -181,9 +153,6 @@ const AdminUsers = () => {
                     الدور
                   </th>
                   <th className="font-medium text-14px text-[#3E4946] py-6">
-                    الحالة
-                  </th>
-                  <th className="font-medium text-14px text-[#3E4946] py-6">
                     الإجراءات
                   </th>
                 </tr>
@@ -191,7 +160,7 @@ const AdminUsers = () => {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-10">
+                    <td colSpan={4} className="text-center py-10">
                       <span className="loading loading-spinner loading-lg text-primary"></span>
                     </td>
                   </tr>
@@ -213,40 +182,12 @@ const AdminUsers = () => {
                       <td>
                         <div className="badge">{item.role}</div>
                       </td>
-                      <td>
-                        <div
-                          className={`font-normal text-12px ${item.is_active ? "text-primary" : "text-error"}`}
-                        >
-                          {item.is_active ? "نشط" : "غير نشط"}
-                          <span></span>
-                        </div>
-                      </td>
-                      {item.role == "user" ? (
-                        <th>
-                          <button
-                            className={`btn btn-outline font-normal text-12px ${item.is_active ? "btn-error" : "btn-primary"}`}
-                            onClick={() =>
-                              handleStatus(item.id, item.is_active)
-                            }
-                            disabled={loadingId === item.id}
-                          >
-                            {loadingId === item.id ? (
-                              <span className="loading loading-spinner"></span>
-                            ) : item.is_active ? (
-                              "إلغاء التفعيل"
-                            ) : (
-                              "تفعيل"
-                            )}
-                          </button>
-                        </th>
-                      ) : (
-                        <th></th>
-                      )}
+                      <th></th>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="text-center py-10 text-gray-500">
+                    <td colSpan={4} className="text-center py-10 text-gray-500">
                       لا يوجد مستخدمين
                     </td>
                   </tr>
