@@ -153,7 +153,7 @@ const AdminUsers = () => {
                     الدور
                   </th>
                   <th className="font-medium text-14px text-[#3E4946] py-6">
-                    الإجراءات
+                    الاشتراك
                   </th>
                 </tr>
               </thead>
@@ -182,7 +182,11 @@ const AdminUsers = () => {
                       <td>
                         <div className="badge">{item.role}</div>
                       </td>
-                      <th></th>
+                      <td>
+                        <div className={`font-normal text-12px ${item.is_subscribed ? "text-primary" : "text-error"}`}>
+                          {item.is_subscribed ? "مشترك" : "غير مشترك"}
+                        </div>
+                      </td>
                     </tr>
                   ))
                 ) : (
