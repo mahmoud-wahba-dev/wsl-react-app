@@ -68,8 +68,8 @@ const AdminUsers = () => {
 
     try {
       const endpoint = isSubscribed
-        ? `/api/admin/users/${id}/unsubscribe/`
-        : `/api/admin/users/${id}/subscribe/`;
+        ? `/api/users/${id}/unsubscribe/`
+        : `/api/users/${id}/subscribe/`;
 
       const res = await api(endpoint, { method: "POST" });
       Toast.success(res.message || (isSubscribed ? "تم إلغاء الاشتراك" : "تم تفعيل الاشتراك"));
