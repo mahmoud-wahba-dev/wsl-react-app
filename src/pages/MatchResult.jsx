@@ -21,7 +21,6 @@ const MatchResult = () => {
         });
         setResults(data.data.results);
         setPdfReady(!!(data.data.is_subscribed && data.data.results?.length > 0));
-        console.log("[MatchResult] match response:", data.data);
       } catch (err) {
         setResults([]);
         // Surface the backend message (e.g. subscription/quota errors).
@@ -36,7 +35,6 @@ const MatchResult = () => {
   }, [id]);
 
   const handleDownloadPdf = async () => {
-    console.log("[PDF] button clicked, id=", id);
     setPdfLoading(true);
     try {
       await downloadPdf(
@@ -44,7 +42,6 @@ const MatchResult = () => {
         `match_results_${id}.pdf`
       );
     } catch (err) {
-      console.error("[PDF] download error:", err);
       // Error shape from StandardResponseRenderer: { status:0, message, errors }
       const msg = err?.message || err?.detail;
       if (err?._message === "msg.pdfExpired" || err?.status === 0) {
