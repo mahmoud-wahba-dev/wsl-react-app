@@ -21,6 +21,7 @@ const MatchResult = () => {
         });
         setResults(data.data.results);
         setPdfReady(!!(data.data.is_subscribed && data.data.results?.length > 0));
+        console.log("[MatchResult] match response:", data.data);
       } catch (err) {
         setResults([]);
         // Surface the backend message (e.g. subscription/quota errors).
