@@ -36,6 +36,7 @@ const MatchResult = () => {
   }, [id]);
 
   const handleDownloadPdf = async () => {
+    console.log("[PDF] button clicked, id=", id);
     setPdfLoading(true);
     try {
       await downloadPdf(
@@ -43,6 +44,7 @@ const MatchResult = () => {
         `match_results_${id}.pdf`
       );
     } catch (err) {
+      console.error("[PDF] download error:", err);
       // Error shape from StandardResponseRenderer: { status:0, message, errors }
       const msg = err?.message || err?.detail;
       if (err?._message === "msg.pdfExpired" || err?.status === 0) {
