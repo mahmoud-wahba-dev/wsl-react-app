@@ -20,7 +20,7 @@ const MatchResult = () => {
           method: "POST",
         });
         setResults(data.data.results);
-        setPdfReady(!!data.data.pdf_ready);
+        setPdfReady(!!(data.data.is_subscribed && data.data.results?.length > 0));
       } catch (err) {
         setResults([]);
         // Surface the backend message (e.g. subscription/quota errors).
@@ -42,13 +42,13 @@ const MatchResult = () => {
         `match_results_${id}.pdf`
       );
     } catch (err) {
-      if (err?._message === "msg.pdfExpired") {
-        Toast.error("انتهت صلاحية الملف. أعد تشغيل المطابقة مرة أخرى.");
+      // Error shape from StandardResponseRenderer: { status:0, message, errors }
+      const msg = err?.message || err?.detail;
+      if (err?._message === "msg.pdfExpired" || err?.status === 0) {
+        Toast.error(msg || "انتهت صلاحية الملف. أعد تشغيل المطابقة مرة أخرى.");
         setPdfReady(false);
-      } else if (err?.detail) {
-        Toast.error(err.detail);
       } else {
-        Toast.error("تعذّر تنزيل الملف. حاول مرة أخرى.");
+        Toast.error(msg || "تعذّر تنزيل الملف. حاول مرة أخرى.");
       }
     }
     setPdfLoading(false);

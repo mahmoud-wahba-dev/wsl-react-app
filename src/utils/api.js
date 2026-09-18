@@ -31,7 +31,8 @@ export async function api(endpoint, options = {}) {
  */
 export async function downloadPdf(endpoint, filename = "report.pdf") {
   const token = Cookies.get("access_token");
-  const res = await fetch(`${baseURL}${endpoint}`, {
+  const url = `${baseURL}${endpoint}`;
+  const res = await fetch(url, {
     method: "GET",
     headers: {
       "Accept-Language": "ar",
@@ -40,13 +41,13 @@ export async function downloadPdf(endpoint, filename = "report.pdf") {
   });
 
   if (!res.ok) {
-    // Try to surface a JSON error message if available
     const contentType = res.headers.get("content-type") || "";
     if (contentType.includes("application/json")) {
       const err = await res.json();
+      // Handle both raw { detail } and wrapped { status:0, message, errors }
       throw err;
     }
-    throw { detail: `HTTP ${res.status}` };
+    throw { message: `HTTP ${res.status}` };
   }
 
   const blob = await res.blob();
