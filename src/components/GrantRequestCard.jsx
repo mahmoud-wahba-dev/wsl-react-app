@@ -1,9 +1,27 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { downloadPdf } from "../utils/api";
+import Toast from "../../public/services/toast";
 
 const GrantRequestCard = ({ req }) => {
   const navigate = useNavigate();
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const handleMatch = () => navigate(`/match-result/${req.id}`);
+
+  const handleDownloadPdf = async () => {
+    setPdfLoading(true);
+    try {
+      await downloadPdf(
+        `/api/grants/requests/${req.id}/match/pdf/`,
+        `match_results_${req.id}.pdf`
+      );
+    } catch (err) {
+      const msg = err?.message || err?.detail;
+      Toast.error(msg || "تعذّر تنزيل الملف. حاول مرة أخرى.");
+    }
+    setPdfLoading(false);
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
@@ -51,18 +69,39 @@ const GrantRequestCard = ({ req }) => {
         </div>
 
         <div className="flex gap-3">
+          {req.hasMatchResults && (
+            <button
+              onClick={handleDownloadPdf}
+              disabled={pdfLoading}
+              className="btn btn-outline border-primary rounded-13px h-11 font-medium text-14px text-primary flex items-center gap-2"
+              aria-label="تنزيل نتائج المطابقة بصيغة PDF"
+            >
+              {pdfLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM6 20C5.45 20 4.97917 19.8042 4.5875 19.4125C4.19583 19.0208 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H6Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              )}
+              تنزيل PDF
+            </button>
+          )}
           <button
             onClick={handleMatch}
             className="btn btn-outline border-[#6E7A76] rounded-13px h-11 font-medium text-14px text-[#3E4946]"
           >
             عرض النتائج
           </button>
-          {/* <button
-            onClick={handleMatch}
-            className="btn btn-primary rounded-13px h-11 font-medium text-14px"
-          >
-            تعديل
-          </button> */}
         </div>
       </div>
     </div>

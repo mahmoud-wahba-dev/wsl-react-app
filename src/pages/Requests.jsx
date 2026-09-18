@@ -14,6 +14,7 @@ const mapRequest = (item) => ({
   status: "تم الارسال",
   statusType: "sent",
   icon: null,
+  hasMatchResults: !!item.has_match_results,
 });
 
 const Requests = () => {
