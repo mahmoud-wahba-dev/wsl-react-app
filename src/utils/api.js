@@ -31,8 +31,8 @@ export async function api(endpoint, options = {}) {
  */
 export async function downloadPdf(endpoint, filename = "report.pdf") {
   const token = Cookies.get("access_token");
-  const url = `${baseURL}${endpoint}`;
-  const res = await fetch(url, {
+  const requestUrl = `${baseURL}${endpoint}`;
+  const res = await fetch(requestUrl, {
     method: "GET",
     headers: {
       "Accept-Language": "ar",
@@ -44,19 +44,18 @@ export async function downloadPdf(endpoint, filename = "report.pdf") {
     const contentType = res.headers.get("content-type") || "";
     if (contentType.includes("application/json")) {
       const err = await res.json();
-      // Handle both raw { detail } and wrapped { status:0, message, errors }
       throw err;
     }
     throw { message: `HTTP ${res.status}` };
   }
 
   const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
+  const blobUrl = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
+  a.href = blobUrl;
   a.download = filename;
   document.body.appendChild(a);
   a.click();
   a.remove();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(blobUrl);
 }
