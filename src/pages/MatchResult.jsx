@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { api } from "../utils/api";
+import { api, downloadPdf } from "../utils/api";
 import MatchDonorCard from "../components/MatchDonorCard";
 import Loader from "../components/Loader";
 import Toast from "../../public/services/toast";
@@ -9,6 +9,8 @@ const MatchResult = () => {
   const { id } = useParams();
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pdfReady, setPdfReady] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -18,6 +20,7 @@ const MatchResult = () => {
           method: "POST",
         });
         setResults(data.data.results);
+        setPdfReady(!!data.data.pdf_ready);
       } catch (err) {
         setResults([]);
         // Surface the backend message (e.g. subscription/quota errors).
@@ -31,21 +34,73 @@ const MatchResult = () => {
     load();
   }, [id]);
 
+  const handleDownloadPdf = async () => {
+    setPdfLoading(true);
+    try {
+      await downloadPdf(
+        `/api/grants/requests/${id}/match/pdf/`,
+        `match_results_${id}.pdf`
+      );
+    } catch (err) {
+      if (err?._message === "msg.pdfExpired") {
+        Toast.error("انتهت صلاحية الملف. أعد تشغيل المطابقة مرة أخرى.");
+        setPdfReady(false);
+      } else if (err?.detail) {
+        Toast.error(err.detail);
+      } else {
+        Toast.error("تعذّر تنزيل الملف. حاول مرة أخرى.");
+      }
+    }
+    setPdfLoading(false);
+  };
+
   return (
     <section>
       <div className="container">
         <div className="flex items-center gap-4 mb-12">
-          <div className="mt-16">
-            <h1 className="font-bold text-32px text-[#0D1D2C] mb-1 flex items-center gap-1">
-              <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10.425 20.325L18.9 11.85L16.7625 9.7125L10.425 16.05L7.275 12.9L5.1375 15.0375L10.425 20.325ZM12 30C8.525 29.125 5.65625 27.1312 3.39375 24.0187C1.13125 20.9062 0 17.45 0 13.65V4.5L12 0L24 4.5V13.65C24 17.45 22.8688 20.9062 20.6063 24.0187C18.3438 27.1312 15.475 29.125 12 30ZM12 26.85C14.6 26.025 16.75 24.375 18.45 21.9C20.15 19.425 21 16.675 21 13.65V6.5625L12 3.1875L3 6.5625V13.65C3 16.675 3.85 19.425 5.55 21.9C7.25 24.375 9.4 26.025 12 26.85Z" fill="#006153"/>
-              </svg>
-              أنسب المؤسسات المانحة لمشروعك
-            </h1>
-            <p className="font-normal text-base text-[#3E4946]">
-              بناءً على معايير مشروعك وتوجهات المانحين، قمنا بتحليل مئات الفرص
-              للوصول إلى هذه القائمة المختارة.
-            </p>
+          <div className="mt-16 w-full">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <h1 className="font-bold text-32px text-[#0D1D2C] mb-1 flex items-center gap-1">
+                  <svg width="24" height="30" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.425 20.325L18.9 11.85L16.7625 9.7125L10.425 16.05L7.275 12.9L5.1375 15.0375L10.425 20.325ZM12 30C8.525 29.125 5.65625 27.1312 3.39375 24.0187C1.13125 20.9062 0 17.45 0 13.65V4.5L12 0L24 4.5V13.65C24 17.45 22.8688 20.9062 20.6063 24.0187C18.3438 27.1312 15.475 29.125 12 30ZM12 26.85C14.6 26.025 16.75 24.375 18.45 21.9C20.15 19.425 21 16.675 21 13.65V6.5625L12 3.1875L3 6.5625V13.65C3 16.675 3.85 19.425 5.55 21.9C7.25 24.375 9.4 26.025 12 26.85Z" fill="#006153"/>
+                  </svg>
+                  أنسب المؤسسات المانحة لمشروعك
+                </h1>
+                <p className="font-normal text-base text-[#3E4946]">
+                  بناءً على معايير مشروعك وتوجهات المانحين، قمنا بتحليل مئات الفرص
+                  للوصول إلى هذه القائمة المختارة.
+                </p>
+              </div>
+
+              {pdfReady && !loading && results.length > 0 && (
+                <button
+                  onClick={handleDownloadPdf}
+                  disabled={pdfLoading}
+                  className="btn btn-primary rounded-13px h-11 font-medium text-14px flex items-center gap-2 mt-1"
+                  aria-label="تنزيل نتائج المطابقة بصيغة PDF"
+                >
+                  {pdfLoading ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM6 20C5.45 20 4.97917 19.8042 4.5875 19.4125C4.19583 19.0208 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H6Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  )}
+                  تنزيل PDF
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
