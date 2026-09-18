@@ -93,7 +93,7 @@ const GrantRequestCard = ({ req }) => {
                   />
                 </svg>
               )}
-              تنزيل PDF
+              تحميل آخر النتائج
             </button>
           )}
           <button
