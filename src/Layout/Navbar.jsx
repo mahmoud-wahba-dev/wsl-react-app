@@ -30,7 +30,7 @@ export default function Navbar() {
       : isRestricted
         ? []
         : [{ name: "الرئيسيه", href: "/" }]),
-    ...(isRestricted ? [] : [{ name: "المؤسسات", href: "/organizations" }]),
+    { name: "المؤسسات", href: "/organizations" },
     { name: "الطلبات", href: "/requests" },
     { name: "تقديم طلب جديد", href: "/match-request" },
   ];
