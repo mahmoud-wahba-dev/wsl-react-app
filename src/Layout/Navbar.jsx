@@ -34,8 +34,8 @@ export default function Navbar() {
     { name: "تقديم طلب جديد", href: "/match-request" },
   ];
 
-  // Always visible nav item — public page
-  const publicItems = [{ name: "المؤسسات", href: "/organizations" }];
+  // Visible to logged-in users only (المؤسسات is public but shown in landing page for guests)
+  const publicItems = isLoggedIn ? [{ name: "المؤسسات", href: "/organizations" }] : [];
 
   return (
     <nav className="bg-[#F8F9FF] shadow-sm">
