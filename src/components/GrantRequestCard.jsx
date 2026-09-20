@@ -98,9 +98,9 @@ const GrantRequestCard = ({ req }) => {
           )}
           <button
             onClick={handleMatch}
-            className="btn btn-outline border-[#6E7A76] rounded-13px h-11 font-medium text-14px text-[#3E4946]"
+            className="btn btn-primary rounded-13px h-11 font-medium text-14px"
           >
-            عرض النتائج
+            ابحث عن نتائج مطابقة جديدة
           </button>
         </div>
       </div>
