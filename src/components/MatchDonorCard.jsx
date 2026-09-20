@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Toast from '../../public/services/toast';
 const MatchDonorCard = ({ donor }) => {
   const isLocked = donor.locked === true;
   const reasons = donor.reasons || [];
@@ -49,12 +50,13 @@ const MatchDonorCard = ({ donor }) => {
                 اشترك للاطلاع على أسباب التطابق والشروط الناقصة والتوصيات
                 وبيانات التواصل مع الجهة المانحة.
               </p>
-              <Link
-                to="/profile"
+              <button
+                type="button"
+                onClick={() => Toast.info("هذه الخدمة قيد التنفيذ، ستكون متاحة قريباً.")}
                 className="btn btn-primary rounded-13px h-11 font-medium text-14px"
               >
                 ترقية الاشتراك
-              </Link>
+              </button>
             </div>
           ) : (
           <div className="flex justify-between xl:gap-8 gap-4">
