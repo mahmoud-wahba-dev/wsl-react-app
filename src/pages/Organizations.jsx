@@ -22,24 +22,25 @@ const Organizations = () => {
   const page = Number(searchParams.get("page")) || 1;
   const pageSize = Number(searchParams.get("page_size")) || PAGE_SIZE;
 
-  const getParams = useCallback((overrides = {}) => {
-    const params = new URLSearchParams();
-    const values = {
-      search,
-      funding_area,
-      page: String(page),
-      page_size: String(pageSize),
-      ...overrides,
-    };
-
-    Object.entries(values).forEach(([key, value]) => {
-      if (value !== "" && value !== null && value !== undefined) {
-        params.set(key, String(value));
-      }
-    });
-
-    return params;
-  }, [search, funding_area, page, pageSize]);
+  const getParams = useCallback(
+    (overrides = {}) => {
+      const params = new URLSearchParams();
+      const values = {
+        search,
+        funding_area,
+        page: String(page),
+        page_size: String(pageSize),
+        ...overrides,
+      };
+      Object.entries(values).forEach(([key, value]) => {
+        if (value !== "" && value !== null && value !== undefined) {
+          params.set(key, String(value));
+        }
+      });
+      return params;
+    },
+    [search, funding_area, page, pageSize]
+  );
 
   const setPage = (nextPage) => {
     setSearchParams(getParams({ page: String(nextPage) }));
@@ -80,14 +81,13 @@ const Organizations = () => {
   return (
     <section>
       <div className="container">
-        <div className="flex items-center  gap-4 mb-12">
+        <div className="flex items-center gap-4 mb-12">
           <div className="mt-16">
             <h1 className="font-bold text-32px text-[#0D1D2C] mb-1">
               المؤسسات المانحة
             </h1>
-
             <p className="font-normal text-base text-[#3E4946]">
-              استكشف واكتشف الشريك المانح الأمثل لمشروعك التنموي{" "}
+              استكشف واكتشف الشريك المانح الأمثل لمشروعك التنموي
             </p>
           </div>
         </div>
@@ -116,63 +116,10 @@ const Organizations = () => {
               placeholder="البحث عن اسم المؤسسة..."
               value={search}
               onChange={(e) =>
-                setSearchParams(
-                  getParams({
-                    search: e.target.value,
-                    page: "1",
-                  }),
-                )
+                setSearchParams(getParams({ search: e.target.value, page: "1" }))
               }
             />
           </label>
-
-          {/* <div className="dropdown">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn m-1 font-medium text-14px text-[#0D1D2C] bg-white"
-            >
-              <svg
-                width="18"
-                height="12"
-                viewBox="0 0 18 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7 12V10H11V12H7ZM3 7V5H15V7H3ZM0 2V0H18V2H0Z"
-                  fill="#0D1D2C"
-                />
-              </svg>
-              تصفية النتائج
-            </div>
-            <ul
-              tabIndex="-1"
-              className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
-            >
-              <li>
-                <a onClick={() => setSearchParams({ search, page: "1" })}>الكل</a>
-              </li>
-              <li>
-                <a
-                  onClick={() =>
-                    setSearchParams({ search, funding_area: "التعليم", page: "1" })
-                  }
-                >
-                  التعليم
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={() =>
-                    setSearchParams({ search, funding_area: "الصحة", page: "1" })
-                  }
-                >
-                  الصحة
-                </a>
-              </li>
-            </ul>
-          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6 items-stretch">
@@ -194,21 +141,25 @@ const Organizations = () => {
                 className="join-item btn"
                 disabled={currentPage <= 1}
                 onClick={() => setPage(currentPage - 1)}
-              >«</button>
-
+              >
+                «
+              </button>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                 <button
                   key={p}
                   className={`join-item btn ${p === currentPage ? "btn-active border-[#BDC9C5]" : ""}`}
                   onClick={() => setPage(p)}
-                >{p}</button>
+                >
+                  {p}
+                </button>
               ))}
-
               <button
                 className="join-item btn"
                 disabled={currentPage >= totalPages}
                 onClick={() => setPage(currentPage + 1)}
-              >»</button>
+              >
+                »
+              </button>
             </div>
             <p className="font-normal text-12px text-[#3E4946]">
               عرض {start}-{end} من أصل {count} مؤسسة

@@ -30,10 +30,12 @@ export default function Navbar() {
       : isRestricted
         ? []
         : [{ name: "الرئيسيه", href: "/" }]),
-    { name: "المؤسسات", href: "/organizations" },
     { name: "الطلبات", href: "/requests" },
     { name: "تقديم طلب جديد", href: "/match-request" },
   ];
+
+  // Always visible nav item — public page
+  const publicItems = [{ name: "المؤسسات", href: "/organizations" }];
 
   return (
     <nav className="bg-[#F8F9FF] shadow-sm">
@@ -50,20 +52,33 @@ export default function Navbar() {
             </NavLink>
           </div>
           <div className="flex-none gap-2">
-            {isLoggedIn && (
-              <ul className="menu menu-horizontal px-1 max-md:hidden">
-                {items.map((item, idx) => (
-                  <li key={idx}>
+            <ul className="menu menu-horizontal px-1 max-md:hidden">
+              {publicItems.map((item, idx) => (
+                <li key={`pub-${idx}`}>
+                  <NavLink
+                    to={item.href}
+                    className={({ isActive }) =>
+                      `font-normal text-base text-[#3E4946] px-3 py-2 rounded-lg transition-colors ${isActive ? "bg-primary text-white" : "hover:bg-gray-100"}`
+                    }
+                  >
+                    {item.name}
+                  </NavLink>
+                </li>
+              ))}
+              {isLoggedIn &&
+                items.map((item, idx) => (
+                  <li key={`auth-${idx}`}>
                     <NavLink
                       to={item.href}
-                      className={({isActive})=>`font-normal text-base text-[#3E4946] px-3 py-2 rounded-lg transition-colors ${isActive ? "bg-primary text-white" : "hover:bg-gray-100"}`}
+                      className={({ isActive }) =>
+                        `font-normal text-base text-[#3E4946] px-3 py-2 rounded-lg transition-colors ${isActive ? "bg-primary text-white" : "hover:bg-gray-100"}`
+                      }
                     >
                       {item.name}
                     </NavLink>
                   </li>
                 ))}
-              </ul>
-            )}
+            </ul>
             <button
               type="button"
               className="btn btn-ghost btn-circle text-[#3E4946] hover:bg-gray-200"
@@ -188,31 +203,37 @@ export default function Navbar() {
                   />
                 </svg>
               </div>
-              {isLoggedIn && (
-                <ul
+              <ul
                   tabIndex="-1"
                   className="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-lg"
                 >
-                  {items.map((item, idx) => (
-                    <li key={idx}>
-                      <NavLink
-                        to={item.href}
-                        className="font-normal text-base text-[#3E4946]"
-                      >
+                  {publicItems.map((item, idx) => (
+                    <li key={`pub-${idx}`}>
+                      <NavLink to={item.href} className="font-normal text-base text-[#3E4946]">
                         {item.name}
                       </NavLink>
                     </li>
                   ))}
-                  <li>
-                    <button
-                      onClick={handleLogout}
-                      className="font-normal text-base text-[#3E4946]"
-                    >
-                      تسجيل الخروج
-                    </button>
-                  </li>
+                  {isLoggedIn && (
+                    <>
+                      {items.map((item, idx) => (
+                        <li key={`auth-${idx}`}>
+                          <NavLink to={item.href} className="font-normal text-base text-[#3E4946]">
+                            {item.name}
+                          </NavLink>
+                        </li>
+                      ))}
+                      <li>
+                        <button
+                          onClick={handleLogout}
+                          className="font-normal text-base text-[#3E4946]"
+                        >
+                          تسجيل الخروج
+                        </button>
+                      </li>
+                    </>
+                  )}
                 </ul>
-              )}
             </div>
           </div>
         </div>

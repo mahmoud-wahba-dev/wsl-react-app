@@ -30,6 +30,15 @@ const router = createBrowserRouter([
   // Public / for guests; verified users see dashboard via RootHome
   { path: "/", element: <RootHome /> },
 
+  // Fully public — no auth required
+  {
+    element: <MasterLayout />,
+    children: [
+      { path: "/organizations", element: <Organizations /> },
+      { path: "/organizations/:id", element: <OrgDetails /> },
+    ],
+  },
+
   // Guest routes (login, register, reset-password)
   {
     element: <GuestRoute />,
@@ -51,8 +60,6 @@ const router = createBrowserRouter([
           { path: "requests", element: <Requests /> },
           { path: "match-request", element: <MatchRequest /> },
           { path: "match-result/:id", element: <MatchResult /> },
-          { path: "organizations", element: <Organizations /> },
-          { path: "organizations/:id", element: <OrgDetails /> },
 
           // Subscription-gated: unsubscribed non-admin users are redirected
           {
