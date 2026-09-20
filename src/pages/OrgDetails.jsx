@@ -12,7 +12,7 @@ const contactTypeLabels = {
 };
 
 const OrgDetails = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [org, setOrg] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +20,7 @@ const OrgDetails = () => {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await api(`/api/grants/donors/${id}/`);
+        const res = await api(`/api/grants/donors/${slug}/`);
         setOrg(res.data);
       } catch {
         setOrg(null);
@@ -28,7 +28,7 @@ const OrgDetails = () => {
       setLoading(false);
     };
     load();
-  }, [id]);
+  }, [slug]);
 
   if (loading) {
     return (

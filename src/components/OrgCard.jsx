@@ -73,7 +73,7 @@ const OrgCard = ({ item }) => {
         )}
       </div>
       <div className="mt-auto">
-        <Link to={`/organizations/${item.id}`} className="btn btn-primary btn-block font-medium text-14px">
+        <Link to={`/organizations/${item.slug || item.id}`} className="btn btn-primary btn-block font-medium text-14px">
           عرض التفاصيل
         </Link>
       </div>
