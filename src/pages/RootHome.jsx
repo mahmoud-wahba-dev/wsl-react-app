@@ -5,6 +5,7 @@ import Navbar from "../Layout/Navbar";
 import Footer from "../Layout/Footer";
 import Home from "./Home";
 import Landing from "./Landing";
+import ScrollToTop from "../components/ScrollToTop";
 
 const RootHome = () => {
   const { user, loading } = useAuth();
@@ -24,6 +25,7 @@ const RootHome = () => {
 
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <main className="min-h-[90vh]">
         <Home />

@@ -6,6 +6,7 @@ import useScrollReveal from "../hooks/useScrollReveal";
 import OrgCard from "../components/OrgCard";
 import Loader from "../components/Loader";
 import { api } from "../utils/api";
+import ScrollToTop from "../components/ScrollToTop";
 
 const features = [
   {
@@ -163,6 +164,7 @@ const Landing = () => {
 
   return (
     <div id="top" className="min-h-screen bg-[#F8F9FF] text-[#0D1D2C]">
+      <ScrollToTop />
       <LandingHeader />
 
       {/* Hero — one composition, brand first, full-bleed imagery */}
