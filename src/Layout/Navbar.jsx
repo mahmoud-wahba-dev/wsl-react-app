@@ -129,6 +129,16 @@ export default function Navbar() {
                 </svg>
               )}
             </button>
+            {!isLoggedIn && (
+              <div className="max-md:hidden flex items-center gap-2">
+                <Link to="/login" className="btn btn-ghost btn-sm font-medium text-14px text-[#3E4946]">
+                  تسجيل الدخول
+                </Link>
+                <Link to="/register" className="btn btn-primary btn-sm rounded-13px font-medium text-14px">
+                  إنشاء حساب
+                </Link>
+              </div>
+            )}
             {isLoggedIn && (
               <div className="dropdown dropdown-end">
                 <div
@@ -214,6 +224,12 @@ export default function Navbar() {
                       </NavLink>
                     </li>
                   ))}
+                  {!isLoggedIn && (
+                    <>
+                      <li><NavLink to="/login" className="font-normal text-base text-[#3E4946]">تسجيل الدخول</NavLink></li>
+                      <li><NavLink to="/register" className="font-normal text-base text-primary font-medium">إنشاء حساب</NavLink></li>
+                    </>
+                  )}
                   {isLoggedIn && (
                     <>
                       {items.map((item, idx) => (
