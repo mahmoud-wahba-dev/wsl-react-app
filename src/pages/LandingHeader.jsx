@@ -5,6 +5,8 @@ import logo from "/logo.png";
 const navLinks = [
   { label: "المميزات", href: "#features" },
   { label: "كيف تعمل", href: "#how-it-works" },
+  { label: "الباقات", href: "#pricing" },
+  { label: "المؤسسات", href: "#organizations" },
   { label: "ابدأ", href: "#cta" },
 ];
 
