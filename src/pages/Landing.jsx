@@ -275,6 +275,126 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Tiers */}
+      <section id="pricing" className="py-16 sm:py-20 md:py-24 bg-[#EEF4FF]/70">
+        <div className="container">
+          <Reveal>
+            <h2 className="text-28px sm:text-36px font-bold text-primary mb-3 text-center">
+              اختر المستوى المناسب لك
+            </h2>
+            <p className="text-[#3E4946] text-base text-center max-w-2xl mx-auto mb-12">
+              ابدأ مجاناً واستكشف المنصة، ثم انتقل إلى الباقة المميزة عندما تكون مستعداً.
+            </p>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+
+            {/* Tier 1 — Public */}
+            <Reveal delay={0} className="flex">
+              <div className="flex flex-col w-full rounded-16px bg-white border border-[#E2EAE8] p-8 shadow-sm">
+                <div className="mb-6">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF4FF] text-[#3B6FD4] text-12px font-semibold mb-4">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+                    مجاني
+                  </span>
+                  <h3 className="font-bold text-22px text-[#0D1D2C] mb-1">الزائر</h3>
+                  <p className="text-[#3E4946] text-14px leading-relaxed">
+                    استكشف المنصة دون تسجيل — تصفّح المؤسسات وابحث بحرية.
+                  </p>
+                </div>
+                <ul className="space-y-3 mb-8 flex-1">
+                  {[
+                    "تصفح المؤسسات المانحة",
+                    "البحث بالاسم أو مجال التمويل",
+                    "عرض تفاصيل كل مؤسسة",
+                  ].map((f) => (
+                    <li key={f} className="flex items-center gap-3 text-14px text-[#0D1D2C]">
+                      <svg className="shrink-0 text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/organizations" className="btn btn-outline border-primary text-primary rounded-13px h-11 font-medium text-14px hover:bg-primary hover:text-white">
+                  استعرض المؤسسات
+                </Link>
+              </div>
+            </Reveal>
+
+            {/* Tier 2 — Registered (free) */}
+            <Reveal delay={100} className="flex">
+              <div className="flex flex-col w-full rounded-16px bg-white border border-[#E2EAE8] p-8 shadow-sm">
+                <div className="mb-6">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF7E0] text-[#795A03] text-12px font-semibold mb-4">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+                    مسجّل مجاناً
+                  </span>
+                  <h3 className="font-bold text-22px text-[#0D1D2C] mb-1">العضو</h3>
+                  <p className="text-[#3E4946] text-14px leading-relaxed">
+                    سجّل حسابك واستمتع بمطابقة ذكية محدودة لاختبار المنصة.
+                  </p>
+                </div>
+                <ul className="space-y-3 mb-8 flex-1">
+                  {[
+                    "كل مزايا الزائر",
+                    "تقديم طلبات المنح",
+                    "مطابقة ذكية (عدد محدود)",
+                    "عرض نتائج المطابقة الأساسية",
+                    "متابعة طلباتك",
+                  ].map((f) => (
+                    <li key={f} className="flex items-center gap-3 text-14px text-[#0D1D2C]">
+                      <svg className="shrink-0 text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/register" className="btn btn-outline border-primary text-primary rounded-13px h-11 font-medium text-14px hover:bg-primary hover:text-white">
+                  إنشاء حساب مجاني
+                </Link>
+              </div>
+            </Reveal>
+
+            {/* Tier 3 — Premium */}
+            <Reveal delay={200} className="flex">
+              <div className="flex flex-col w-full rounded-16px bg-primary p-8 shadow-xl shadow-primary/20 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10 pointer-events-none" aria-hidden="true">
+                  <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full bg-white" />
+                  <div className="absolute -bottom-10 -right-10 w-64 h-64 rounded-full bg-white" />
+                </div>
+                <div className="relative mb-6">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-12px font-semibold mb-4">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm2.1-2h9.8l1-5.3-3.3 3.5L12 7.1l-2.6 5.1-3.3-3.5 1 5.3z"/></svg>
+                    الأكثر شيوعاً
+                  </span>
+                  <h3 className="font-bold text-22px text-white mb-1">المميز</h3>
+                  <p className="text-white/80 text-14px leading-relaxed">
+                    احصل على كامل قوة المنصة — مطابقة غير محدودة وتقارير وتفاصيل كاملة.
+                  </p>
+                </div>
+                <ul className="space-y-3 mb-8 flex-1 relative">
+                  {[
+                    "كل مزايا العضو",
+                    "مطابقة ذكية غير محدودة",
+                    "أسباب التطابق والشروط الناقصة",
+                    "توصيات مخصصة لكل مؤسسة",
+                    "تنزيل نتائج المطابقة PDF",
+                    "لوحة إحصائيات متكاملة",
+                  ].map((f) => (
+                    <li key={f} className="flex items-center gap-3 text-14px text-white">
+                      <svg className="shrink-0 text-[#A8F0E0]" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/register" className="relative btn bg-white text-primary hover:bg-white/90 border-0 rounded-13px h-11 font-medium text-14px">
+                  ابدأ الآن
+                </Link>
+              </div>
+            </Reveal>
+
+          </div>
+        </div>
+      </section>
+
       {/* Organizations browse */}
       <section id="organizations" className="py-16 sm:py-20 md:py-24">
         <div className="container">
