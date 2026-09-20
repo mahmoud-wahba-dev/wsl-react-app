@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Footer from "../Layout/Footer";
 import LandingHeader from "./LandingHeader";
 import useScrollReveal from "../hooks/useScrollReveal";
+import OrgCard from "../components/OrgCard";
+import Loader from "../components/Loader";
+import { api } from "../utils/api";
 
 const features = [
   {
@@ -125,6 +129,38 @@ function Reveal({ children, className = "", delay = 0 }) {
 }
 
 const Landing = () => {
+  const [search, setSearch] = useState("");
+  const [fundingArea, setFundingArea] = useState("");
+  const [fundingAreas, setFundingAreas] = useState([]);
+  const [orgs, setOrgs] = useState([]);
+  const [orgsLoading, setOrgsLoading] = useState(true);
+
+  // Fetch funding area options once
+  useEffect(() => {
+    api("/api/grants/donors/funding-areas/")
+      .then((res) => setFundingAreas(Array.isArray(res) ? res : res?.data ?? []))
+      .catch(() => setFundingAreas([]));
+  }, []);
+
+  // Fetch orgs whenever search or filter changes
+  useEffect(() => {
+    const params = new URLSearchParams({ page_size: "6" });
+    if (search) params.set("search", search);
+    if (fundingArea) params.set("funding_area", fundingArea);
+
+    const timer = setTimeout(async () => {
+      setOrgsLoading(true);
+      try {
+        const data = await api(`/api/grants/donors/?${params}`);
+        setOrgs(data?.data?.results || []);
+      } catch {
+        setOrgs([]);
+      }
+      setOrgsLoading(false);
+    }, search ? 500 : 0);
+    return () => clearTimeout(timer);
+  }, [search, fundingArea]);
+
   return (
     <div id="top" className="min-h-screen bg-[#F8F9FF] text-[#0D1D2C]">
       <LandingHeader />
@@ -236,6 +272,88 @@ const Landing = () => {
               </Reveal>
             ))}
           </ol>
+        </div>
+      </section>
+
+      {/* Organizations browse */}
+      <section id="organizations" className="py-16 sm:py-20 md:py-24">
+        <div className="container">
+          <Reveal>
+            <h2 className="text-28px sm:text-36px font-bold text-primary mb-3 text-center">
+              استكشف المؤسسات المانحة
+            </h2>
+            <p className="text-[#3E4946] text-base text-center max-w-2xl mx-auto mb-10">
+              تصفّح المؤسسات المانحة وابحث بالاسم أو مجال التمويل.
+            </p>
+          </Reveal>
+
+          {/* Search + filter */}
+          <div className="flex flex-wrap items-center gap-4 mb-10">
+            <label className="input flex-1 min-w-48">
+              <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </g>
+              </svg>
+              <input
+                type="search"
+                className="h-12"
+                placeholder="البحث عن اسم المؤسسة..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </label>
+
+            {fundingAreas.length > 0 && (
+              <select
+                dir="rtl"
+                className="select border-[#BDC9C5] h-12 rounded-8px min-w-48 font-normal text-14px text-[#3E4946]"
+                value={fundingArea}
+                onChange={(e) => setFundingArea(e.target.value)}
+              >
+                <option value="">جميع مجالات التمويل</option>
+                {fundingAreas.map((area) => (
+                  <option key={area} value={area}>{area}</option>
+                ))}
+              </select>
+            )}
+
+            {fundingArea && (
+              <button
+                onClick={() => setFundingArea("")}
+                className="flex items-center gap-1 px-3 py-1.5 bg-[#0061531A] text-primary rounded-full text-13px font-medium hover:bg-[#00615330] transition-colors"
+              >
+                {fundingArea}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Grid */}
+          {orgsLoading ? (
+            <Loader />
+          ) : orgs.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {orgs.map((item) => (
+                <OrgCard key={item.id} item={item} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center py-16 text-gray-500">لا توجد مؤسسات مانحة</p>
+          )}
+
+          {/* View all link */}
+          <div className="flex justify-center mt-4">
+            <Link
+              to="/organizations"
+              className="btn btn-outline border-primary text-primary rounded-13px h-11 font-medium text-14px hover:bg-primary hover:text-white"
+            >
+              عرض جميع المؤسسات
+            </Link>
+          </div>
         </div>
       </section>
 
