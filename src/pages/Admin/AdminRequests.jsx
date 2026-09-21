@@ -119,15 +119,12 @@ const AdminRequests = () => {
                   <th className="font-medium text-14px text-[#3E4946] py-6">
                     المدة
                   </th>
-                  <th className="font-medium text-14px text-[#3E4946] py-6">
-                    الحالة
-                  </th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="text-center py-10">
+                    <td colSpan={7} className="text-center py-10">
                       <span className="loading loading-spinner loading-lg text-primary"></span>
                     </td>
                   </tr>
@@ -196,25 +193,11 @@ const AdminRequests = () => {
                       <td className="font-normal text-base text-[#3E4946]">
                         {item.duration_months} شهر
                       </td>
-                      <td>
-                        <div className="flex flex-col gap-1">
-                          <span
-                            className={`badge  text-11px ${item.is_licensed ? "bg-[#0061531A] text-[#006153]" : "bg-[#FFD578] text-[#795A03]"}`}
-                          >
-                            {item.is_licensed ? "مرخصة" : "غير مرخصة"}
-                          </span>
-                          <span
-                            className={`badge text-11px py-5 ${item.has_bank_account ? "bg-[#0061531A] text-[#006153]" : "bg-[#EEF4FF] text-[#3E4946]"}`}
-                          >
-                            {item.has_bank_account ? "لديه حساب بنكي" : "بدون حساب بنكي"}
-                          </span>
-                        </div>
-                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={8} className="text-center py-10 text-gray-500">
+                    <td colSpan={7} className="text-center py-10 text-gray-500">
                       لا توجد طلبات
                     </td>
                   </tr>
