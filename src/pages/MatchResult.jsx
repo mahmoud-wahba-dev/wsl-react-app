@@ -4,6 +4,7 @@ import { api, downloadPdf } from "../utils/api";
 import MatchDonorCard from "../components/MatchDonorCard";
 import Loader from "../components/Loader";
 import Toast from "../../public/services/toast";
+import UpgradeBanner from "../components/UpgradeBanner";
 
 const MatchResult = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const MatchResult = () => {
   const [loading, setLoading] = useState(true);
   const [pdfReady, setPdfReady] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(true);
 
   useEffect(() => {
     const load = async () => {
@@ -21,6 +23,7 @@ const MatchResult = () => {
         });
         setResults(data.data.results);
         setPdfReady(!!(data.data.is_subscribed && data.data.results?.length > 0));
+        setIsSubscribed(!!data.data.is_subscribed);
       } catch (err) {
         setResults([]);
         // Surface the backend message (e.g. subscription/quota errors).
@@ -146,6 +149,9 @@ const MatchResult = () => {
               <p className="text-center py-20 text-gray-500">
                 لا توجد نتائج مطابقة لعرضها
               </p>
+            )}
+            {!loading && !isSubscribed && results.length > 0 && (
+              <UpgradeBanner />
             )}
           </div>
         </div>

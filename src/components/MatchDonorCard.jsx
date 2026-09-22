@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import Toast from '../../public/services/toast';
 const MatchDonorCard = ({ donor }) => {
   const isLocked = donor.locked === true;
   const reasons = donor.reasons || [];
@@ -29,34 +28,37 @@ const MatchDonorCard = ({ donor }) => {
           </div>
 
           {isLocked ? (
-            <div className="rounded-12px border border-dashed border-primary/40 bg-[#0061530A] p-6">
-              <div className="flex items-center gap-2 font-medium text-16px text-primary mb-2">
-                <svg
-                  width="16"
-                  height="20"
-                  viewBox="0 0 16 21"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M2 21C1.45 21 0.979167 20.8042 0.5875 20.4125C0.195833 20.0208 0 19.55 0 19V9C0 8.45 0.195833 7.97917 0.5875 7.5875C0.979167 7.19583 1.45 7 2 7H3V5C3 3.61667 3.4875 2.4375 4.4625 1.4625C5.4375 0.4875 6.61667 0 8 0C9.38333 0 10.5625 0.4875 11.5375 1.4625C12.5125 2.4375 13 3.61667 13 5V7H14C14.55 7 15.0208 7.19583 15.4125 7.5875C15.8042 7.97917 16 8.45 16 9V19C16 19.55 15.8042 20.0208 15.4125 20.4125C15.0208 20.8042 14.55 21 14 21H2ZM8 16C8.55 16 9.02083 15.8042 9.4125 15.4125C9.80417 15.0208 10 14.55 10 14C10 13.45 9.80417 12.9792 9.4125 12.5875C9.02083 12.1958 8.55 12 8 12C7.45 12 6.97917 12.1958 6.5875 12.5875C6.19583 12.9792 6 13.45 6 14C6 14.55 6.19583 15.0208 6.5875 15.4125C6.97917 15.8042 7.45 16 8 16ZM5 7H11V5C11 4.16667 10.7083 3.45833 10.125 2.875C9.54167 2.29167 8.83333 2 8 2C7.16667 2 6.45833 2.29167 5.875 2.875C5.29167 3.45833 5 4.16667 5 5V7Z"
-                    fill="#006153"
-                  />
-                </svg>
-                تفاصيل التطابق مقفلة
+            <div className="relative overflow-hidden rounded-12px">
+              {/* Blurred placeholder rows */}
+              <div className="select-none pointer-events-none" aria-hidden="true">
+                <div className="flex justify-between xl:gap-8 gap-4 blur-sm opacity-60">
+                  <div className="flex-1 space-y-2">
+                    {[110, 90, 130].map((w, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-4 h-4 rounded-full bg-primary/30 shrink-0" />
+                        <div className="h-4 rounded-full bg-gray-200" style={{ width: w }} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    {[100, 120, 80].map((w, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className="w-4 h-4 rounded-full bg-warning/30 shrink-0" />
+                        <div className="h-4 rounded-full bg-gray-200" style={{ width: w }} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-              <p className="font-normal text-14px text-[#3E4946] mb-4">
-                اشترك للاطلاع على أسباب التطابق والشروط الناقصة والتوصيات
-                وبيانات التواصل مع الجهة المانحة.
-              </p>
-              <button
-                type="button"
-                onClick={() => Toast.info("هذه الخدمة قيد التنفيذ، ستكون متاحة قريباً.")}
-                className="btn btn-primary rounded-13px h-11 font-medium text-14px"
-              >
-                ترقية الاشتراك
-              </button>
+              {/* Lock badge */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-primary/20 rounded-full px-4 py-1.5 shadow-sm">
+                  <svg width="13" height="16" viewBox="0 0 16 21" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M2 21C1.45 21 0.979167 20.8042 0.5875 20.4125C0.195833 20.0208 0 19.55 0 19V9C0 8.45 0.195833 7.97917 0.5875 7.5875C0.979167 7.19583 1.45 7 2 7H3V5C3 3.61667 3.4875 2.4375 4.4625 1.4625C5.4375 0.4875 6.61667 0 8 0C9.38333 0 10.5625 0.4875 11.5375 1.4625C12.5125 2.4375 13 3.61667 13 5V7H14C14.55 7 15.0208 7.19583 15.4125 7.5875C15.8042 7.97917 16 8.45 16 9V19C16 19.55 15.8042 20.0208 15.4125 20.4125C15.0208 20.8042 14.55 21 14 21H2ZM8 16C8.55 16 9.02083 15.8042 9.4125 15.4125C9.80417 15.0208 10 14.55 10 14C10 13.45 9.80417 12.9792 9.4125 12.5875C9.02083 12.1958 8.55 12 8 12C7.45 12 6.97917 12.1958 6.5875 12.5875C6.19583 12.9792 6 13.45 6 14C6 14.55 6.19583 15.0208 6.5875 15.4125C6.97917 15.8042 7.45 16 8 16ZM5 7H11V5C11 4.16667 10.7083 3.45833 10.125 2.875C9.54167 2.29167 8.83333 2 8 2C7.16667 2 6.45833 2.29167 5.875 2.875C5.29167 3.45833 5 4.16667 5 5V7Z" fill="#006153" />
+                  </svg>
+                  <span className="font-medium text-13px text-primary">محتوى مقفل</span>
+                </div>
+              </div>
             </div>
           ) : (
           <div className="flex justify-between xl:gap-8 gap-4">
