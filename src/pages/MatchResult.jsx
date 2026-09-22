@@ -21,7 +21,7 @@ const MatchResult = () => {
         const data = await api(`/api/grants/requests/${id}/match/`, {
           method: "POST",
         });
-        setResults(data.data.results);
+        setResults(data.data.results.filter((r) => r.score >= 40));
         setPdfReady(!!(data.data.is_subscribed && data.data.results?.length > 0));
         setIsSubscribed(!!data.data.is_subscribed);
       } catch (err) {

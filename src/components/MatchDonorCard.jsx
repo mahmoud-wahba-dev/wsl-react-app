@@ -152,7 +152,7 @@ const MatchDonorCard = ({ donor }) => {
         </div>
         <div>
           <div
-            className={`radial-progress font-bold text-16px mb-4 ${donor.confidence == "high" ? "text-primary" : donor.confidence == "medium" ? "text-info" : "text-warning"}`}
+            className={`radial-progress font-bold text-16px mb-4 ${donor.score >= 70 ? "text-primary" : "text-info"}`}
             style={{ "--value": donor.score }}
             role="progressbar"
             aria-valuenow={donor.score}
@@ -161,11 +161,9 @@ const MatchDonorCard = ({ donor }) => {
             <br />%
           </div>
           <p className="font-bold text-14px text-primary">
-            {donor.confidence === "high"
+            {donor.score >= 70
               ? "تطابق ممتاز"
-              : donor.confidence === "medium"
-                ? "تطابق جيد"
-                : "تطابق منخفض"}
+              : "تطابق جيد"}
           </p>
         </div>
       </div>
