@@ -139,6 +139,9 @@ const MatchResult = () => {
             </div> */}
           </div>
           <div className="lg:col-span-12 space-y-6">
+            {!loading && !isSubscribed && results.length > 0 && (
+              <UpgradeBanner />
+            )}
             {loading ? (
               <Loader />
             ) : results.length > 0 ? (
@@ -149,9 +152,6 @@ const MatchResult = () => {
               <p className="text-center py-20 text-gray-500">
                 لا توجد نتائج مطابقة لعرضها
               </p>
-            )}
-            {!loading && !isSubscribed && results.length > 0 && (
-              <UpgradeBanner />
             )}
           </div>
         </div>
